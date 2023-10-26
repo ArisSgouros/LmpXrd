@@ -15,6 +15,9 @@
 #define MAXNumberOfBins 10000
 #define MAX_NumberOfWavevectors 100000 // for S(k)
 
+#define false 0
+#define true 1
+  
 #define SQR(x) ((x)*(x))
 #define CUB(x) ((x)*(x)*(x))
 

@@ -10,7 +10,7 @@
 
 #define MAXConfig 10000
 #define MAXEqui 10000
-#define MAXNumberOfParticles 10000
+#define MAXNumberOfParticles 50000
 #define MAXNumberOfBins 10000
 
 #define SQR(x) ((x)*(x))
