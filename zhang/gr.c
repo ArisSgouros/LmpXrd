@@ -96,11 +96,12 @@ int main(void)
 
 
   fpoutput = fopen("gr.dat","w");
+  fprintf(fpoutput,"r\tg(r)\n");
   for(i=0;i<NumberOfBins;i++)
   {
    g[i] /= SampleNumber;
    g[i] /= 4.0*M_PI/3.0*(CUB(i+1)-CUB(i))*CUB(dr)*rho;
-   fprintf(fpoutput,"r = %lf\tg(r) = %lf\n",(i+0.5)*dr,g[i]/NumberOfParticles);
+   fprintf(fpoutput,"%lf\t%lf\n",(i+0.5)*dr,g[i]/NumberOfParticles);
   }
   fclose(fpoutput);
  printf("density %lf\n",rho);  

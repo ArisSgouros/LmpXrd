@@ -63,9 +63,10 @@ int main(void)
   dr = 0.5*L/NumberOfrBins;
   dq = (qmax-0.0)/NumberOfqBins;
   fpgr = fopen("gr.dat","r"); 
+  fscanf(fpgr, "%*[^\n]\n");
   for(line=0;line<NumberOfrBins;line++)
   {
-   fscanf(fpgr,"r = %lf g(r) = %lf\n",&ri[line],&g[line]);
+   fscanf(fpgr,"%lf\t%lf\n",&ri[line],&g[line]);
   }
 
   for(i=0;i<NumberOfqBins;i++)
@@ -81,9 +82,10 @@ int main(void)
   }
   
   fpoutput = fopen("sqfourier.dat","w");
+  fprintf(fpoutput,"q\tS(q)\n");
   for(i=0;i<NumberOfqBins;i++)
   {
-   fprintf(fpoutput,"q = %lf\tS(q) = %lf\n",qi[i],Sq[i]);
+   fprintf(fpoutput,"%lf\t%lf \n",qi[i],Sq[i]);
   }
   fclose(fpoutput);
  
@@ -226,6 +228,7 @@ int main(void)
   double knorm,skmean;
   double kminus,kplus;
   fpoutput = fopen("sk.dat","w");
+  fprintf(fpoutput,"k\tS(k)\n");
   kcount=0; knorm=0.0; skmean=0.0;
   for(nk=0;nk<NumberOfWavevectors;nk++)
   {
@@ -237,7 +240,7 @@ int main(void)
   if( fabs(kplus-kminus) > 0.001 || nk+1 == NumberOfWavevectors )
   {
    knorm /= kcount;  skmean /= kcount;
-   fprintf(fpoutput,"k = %lf\tS(k) = %lf\n",knorm,skmean);
+   fprintf(fpoutput,"%lf\t%lf\n",knorm,skmean);
    kcount=0; knorm=0.0; skmean=0.0;
   }
  }
