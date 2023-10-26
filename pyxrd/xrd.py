@@ -159,6 +159,39 @@ gab_all = {}
 #
 # The section computes the RDFs from the trajectory files
 #
+
+def GetDumpFormat(filename):
+   col_id = col_xx = col_yy = col_zz = -1
+   f = open(confFileName,"r")
+   line = ""
+   for ii in range(9):
+      line = f.readline()
+   f.close()
+   header = line.split()
+   header = header[2:] # pop first two elements ('ITEM:', 'ATOMS')
+   for icol in range(len(header)):
+      attrib = header[icol]
+      if attrib == 'id':
+         col_id = icol
+      if attrib in ['x', 'xu', 'xs']:
+         col_xx = icol
+      if attrib in ['y', 'yu', 'ys']:
+         col_yy = icol
+      if attrib in ['z', 'zu', 'zs']:
+         col_zz = icol
+   if -1 in [col_id, col_xx, col_yy, col_zz]:
+      print("error with column ids in dump file")
+      print("header: ", line)
+      print("Id    : ", col_id)
+      print("x     : ", col_xx)
+      print("y     : ", col_yy)
+      print("z     : ", col_zz)
+      sys.exit()
+   return col_id, col_xx, col_yy, col_zz
+
+# Check the format of the dump file
+col_id, col_xx, col_yy, col_zz = GetDumpFormat(confFileName)
+
 if computeRDFs == True:
    # Start iterating over all species
    for species_A in typesOfSpecies:
@@ -222,10 +255,10 @@ if computeRDFs == True:
             pos = {}
             for ii in range(nAtoms):
                line = f.readline().split()
-               id = int(line[0])
-               xx = float(line[2])
-               yy = float(line[3])
-               zz = float(line[4])
+               id = int(line[col_id])
+               xx = float(line[col_xx])
+               yy = float(line[col_yy])
+               zz = float(line[col_zz])
                pos.update({id:[xx,yy,zz]})
 
             for id_A in IdsOfSpecies[species_A]:
