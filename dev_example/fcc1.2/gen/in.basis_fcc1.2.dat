@@ -1,0 +1,26 @@
+# LAMMPS data file
+
+4 atoms
+0 bonds
+0 angles
+0 dihedrals
+
+1 atom types
+0 bond types
+0 angle types
+0 dihedral types
+
+0.0 1.49380158218572 xlo xhi
+0.0 1.49380158218572 ylo yhi
+0.0 1.49380158218572 zlo zhi
+
+Masses
+
+1      1 # A
+
+Atoms
+
+1	1	1	0	0	0	0
+2	1	1	0	0.746900791	0.746900791	0
+3	1	1	0	0	0.746900791	0.746900791
+4	1	1	0	0.746900791	0	0.746900791

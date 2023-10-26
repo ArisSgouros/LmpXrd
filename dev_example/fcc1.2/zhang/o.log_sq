@@ -1,0 +1,17 @@
+**************************** 3D S(q) *************************************
+Number of particles in the system ?
+Simulation box size ?
+Number of r bins?
+Number of q bins?
+qmax ?
+
+density 1.200000
+Number of Configurations in the .xyz file ?
+Number of Equilibrations ?
+Number of wavevectors in each dimension ?
+increment dk multiplier ?
+number of k's = 68921
+maximum k = 24.284341
+snapshot 0
+sampling number 1
+*******************************************************

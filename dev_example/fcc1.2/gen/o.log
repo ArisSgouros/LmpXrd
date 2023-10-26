@@ -1,0 +1,48 @@
+path        :  in.basis_fcc1.2.dat
+cells       :  [12, 12, 12]
+periodicity :  [1, 1, 1]
+calc_bond   :  False
+rc(s)       :  [0.0]
+drc         :  0.1
+Reading the datafile: in.basis_fcc1.2.dat
+
+basis origin:
+    [0. 0. 0.]
+basis vectors:
+    [1.49380158 0.         0.        ]
+    [0.         1.49380158 0.        ]
+    [0.         0.         1.49380158]
+basis volume:
+    3.3333333333333233
+basis density:
+    1.2000000000000037
+atom types:
+    1 1.0 A
+basis atoms:
+   id       type     charge           x                y                z               
+   1        1        0.000000000      0.000000000      0.000000000      0.000000000     
+   2        1        0.000000000      0.746900791      0.746900791      0.000000000     
+   3        1        0.000000000      0.000000000      0.746900791      0.746900791     
+   4        1        0.000000000      0.746900791      0.000000000      0.746900791     
+box vectors:
+    [17.92561899  0.          0.        ]
+    [ 0.         17.92561899  0.        ]
+    [ 0.          0.         17.92561899]
+box vectors (lammps constraints):
+   xlo : 0.000000000     
+   xhi : 17.925618986    
+   ylo : 0.000000000     
+   yhi : 17.925618986    
+   zlo : 0.000000000     
+   zhi : 17.925618986    
+   xy  : 0.000000000     
+   xz  : 0.000000000     
+   yz  : 0.000000000     
+
+Generating the atomic coordinates..
+
+Generating a lammps datafile with name o.fcc1.2.dat ..
+
+Generating a lammps dump file with name o.fcc1.2.lammpstrj ..
+
+Generating a XYZ dump file with name o.fcc1.2.xyz ..

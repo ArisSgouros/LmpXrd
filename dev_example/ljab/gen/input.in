@@ -1,0 +1,52 @@
+# 3d Lennard-Jones melt
+
+units		lj
+atom_style	atomic
+
+# generate the system box
+region		rbox block 0 13 0 13 0 13
+create_box	2 rbox
+
+# generate the region of the crystal
+create_atoms	1 random 1000 1234 rbox
+create_atoms	2 random 1000 5678 rbox
+
+
+# setup the interaction potential
+pair_style	lj/cut 2.5
+pair_coeff	1 1 1.0 1.0 2.5
+pair_coeff	1 2 0.5 1.0 2.5
+pair_coeff	2 2 1.0 1.0 2.5
+
+mass		1 1.0
+mass		2 1.0
+
+neighbor	0.3 bin
+neigh_modify	every 20 delay 0 check no
+
+# minimize energy of the initial configuration
+minimize        1.0e-4 1.0e-6 100 1000
+
+# assign initial velocities
+velocity	all create 3.0 87287 loop geom
+
+thermo		1000
+thermo_style    custom step pe ke etotal temp pxx pyy pzz lx ly lz
+
+
+# set the timestep
+timestep        0.005
+
+fix             f2 all nvt temp 3 3 0.5
+run		20000
+unfix           f2
+
+fix             f2 all nvt temp 3 3 0.5
+dump            d1 all custom 2000 movie.lammpstrj id type xu yu zu
+dump            d2 all xyz 2000 movie.xyz
+run		20000
+unfix           f2
+undump          d1
+undump          d2
+
+write_data      pos.dat nocoeff nofix
