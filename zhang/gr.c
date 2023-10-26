@@ -62,9 +62,9 @@ int main(void)
    for(line=0;line<=NumberOfParticles+1;line++) // N+2 lines
    {
      if(line == 0)
-     fscanf(fpxyz,"%*d\n");
+     fscanf(fpxyz, "%*[^\n]\n");
      else if(line == 1)
-     fscanf(fpxyz,"%*s %*s %*d\n");
+     fscanf(fpxyz, "%*[^\n]\n");
      else
      //fscanf(fpxyz,"%c %lf %lf %lf\n",&AtomID,&x[line-1],&y[line-1],&z[line-1]);
      //fscanf(fpxyz,"%c %lf %lf %lf\n",&AtomID,&x[line-2],&y[line-2],&z[line-2]);
