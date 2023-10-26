@@ -4,6 +4,7 @@ import ast
 import numpy as np
 import math as math
 
+kTol = 1e-6
 n_command_line_var = len(sys.argv)
 
 if n_command_line_var != 9 and n_command_line_var != 10:
@@ -270,7 +271,7 @@ if computeRDFs == True:
                iL0 = 1.0 / L0
                iL1 = 1.0 / L1
                iL2 = 1.0 / L2
-               rmax_sq = rmax * rmax
+               rmax_sq = rmax * rmax - kTol
                i_dr = 1.0 / dr
                # End of optimizations
 
@@ -285,7 +286,7 @@ if computeRDFs == True:
 
                   rAB_sq = rAB_0 * rAB_0 + rAB_1 * rAB_1 + rAB_2 * rAB_2
 
-                  if( rAB_sq > rmax_sq):
+                  if( rAB_sq >= rmax_sq):
                      continue
 
                   rAB = np.sqrt(rAB_sq)
