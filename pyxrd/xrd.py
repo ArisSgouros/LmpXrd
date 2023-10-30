@@ -3,8 +3,58 @@ import sys
 import ast
 import numpy as np
 import math as math
+import argparse
 
 kTol = 1e-6
+
+parser = argparse.ArgumentParser(description='Decimate lammps dump files')
+parser.add_argument('datafile', type=str, help='Path of the lammps data file')
+parser.add_argument('dumpfile', type=str, help='Path of the lammps dump file')
+parser.add_argument('rmax', type=float, help='Max radious')
+parser.add_argument('dr', type=float, help='Step interval')
+parser.add_argument('qmax', type=float, help='Max wavevector')
+parser.add_argument('dq', type=float, help='wavevector interval')
+parser.add_argument('nframe', type=int, help='number of frames')
+parser.add_argument('nevery', type=int, help='read frame every')
+parser.add_argument('-coltype', type=int, default=2, help='Atom type column; Full=2, Atomic=1')
+parser.add_argument('-rdffile', type=str, default="", help='Path of the RDF file')
+
+args = parser.parse_args()
+dataFileName = args.datafile
+confFileName = args.dumpfile
+rmax         = args.rmax
+dr           = args.dr
+qmax         = args.qmax
+dq           = args.dq
+nFrame       = args.nframe
+nEvery       = args.nevery
+col_type     = args.coltype
+RDFFileName  = args.rdffile
+
+print( "*Parameters of the calculation*")
+print()
+print( "dataFileName   :",dataFileName)
+print( "confFileName   :",confFileName)
+print( "rmax           :",rmax)
+print( "dr             :",dr)
+print( "qmax           :",qmax)
+print( "dq             :",dq)
+print( "NFrames        :",nFrame)
+print( "NEvery         :",nEvery)
+
+computeRDFs = False
+readRDFs = False
+if RDFFileName != '':
+   readRDFs = True
+   print( "\nThe partial gr will be read from:",RDFFileName)
+else:
+   computeRDFs = True
+   print( "\nThe partial gr will be computed from scratch")
+
+
+
+
+
 
 def GetDumpFormat(filename):
    col_id = col_xx = col_yy = col_zz = -1
@@ -41,75 +91,6 @@ def FormFact(p, qq):
       fa += p["a"][ii] * np.exp(-p["b"][ii]*pow(qq/(4*np.pi),2))
    return fa
 
-n_command_line_var = len(sys.argv)
-
-if n_command_line_var != 9 and n_command_line_var != 10 and n_command_line_var != 11:
-   print()
-   print( "The required formats are the following:")
-   print()
-   print( "python RDF_PER_TYPE.py \"LMP_DATA\" \"LMP_CONF\" \"rmax\" \"dr\" \"qmax\" \"dq\" \"NFRAME\" \"NEVERY\"")
-   print( "example: python RDF_PER_TYPE.py 92pc.data IO.CONF.lammpstrj 10 0.25 15 0.1 10 2")
-   print()
-   print( "OR if you wish to read the partial gr from a previous calculation")
-   print()
-   print( "python RDF_PER_TYPE.py \"LMP_DATA\" \"LMP_CONF\" \"rmax\" \"dr\" \"qmax\" \"dq\" \"NFRAME\" \"NEVERY\" \"Gab_FILE\"")
-   print( "example: python RDF_PER_TYPE.py 92pc.data IO.CONF.lammpstrj 10 0.25 15 0.1 10 2 o.AllRDFs.dat")
-   print()
-   print( "*The format of the Masses section of the data file should be like the following:")
-   print()
-   print( " Masses")
-   print()
-   print( " 1    15.9994   # O")
-   print( " 3    12.0107   # C")
-   print( " 2    12.0107   # C")
-   print( " ..")
-   print()
-   print( "*The format of the atom section of the data file should be like the following:")
-   print( " atomId molId type charge x y z")
-   print()
-   print( "*The formal of the configuration file should be:")
-   print( " id type x y z")
-   print()
-   print( "exiting..")
-   sys.exit()
-
-dataFileName = sys.argv[1]
-confFileName = sys.argv[2]
-rmax = float(sys.argv[3])
-dr = float(sys.argv[4])
-qmax = float(sys.argv[5])
-dq = float(sys.argv[6])
-nFrame = int(sys.argv[7])
-nEvery = int(sys.argv[8])
-
-print( "*Parameters of the calculation*")
-print()
-print( "dataFileName   :",dataFileName)
-print( "confFileName   :",confFileName)
-print( "rmax           :",rmax)
-print( "dr             :",dr)
-print( "qmax           :",qmax)
-print( "dq             :",dq)
-print( "NFrames        :",nFrame)
-print( "NEvery         :",nEvery)
-
-
-
-col_type = 2 # full = 2; atomic = 1
-print(n_command_line_var)
-if n_command_line_var >= 10:
-   col_type = int(sys.argv[9])
-   print(  "col_type   : ", col_type)
-
-computeRDFs = False
-readRDFs = False
-if n_command_line_var == 11:
-   RDFFileName = sys.argv[10]
-   readRDFs = True
-   print( "\nThe partial gr will be read from:",RDFFileName)
-else:
-   computeRDFs = True
-   print( "\nThe partial gr will be computed from scratch")
 
 
 #
