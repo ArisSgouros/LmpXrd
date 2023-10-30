@@ -16,6 +16,7 @@ parser.add_argument('nframe', type=int, help='number of frames')
 parser.add_argument('nevery', type=int, help='read frame every')
 parser.add_argument('-atomtype', type=str, default='full', help='Set the atomtype in the Lammps data file (e.g., full, atomic, etc.)')
 parser.add_argument('-rdffile', type=str, default='o.AllRDFs.dat', help='Path of the rdf file')
+parser.add_argument('-neigh', type=str, default='full', help='Set the considered neighbors: full, inter and intra')
 parser.add_argument('-exclude_interaction', '--exclude_interaction', type=str, help='Exclude one or more interaction pairs')
 
 def GetDumpFormat(filename):
@@ -63,6 +64,7 @@ if __name__ == "__main__":
    nevery       = args.nevery
    atomtype     = args.atomtype
    file_rdf     = args.rdffile
+   neigh        = args.neigh
    exclude_inter = [str(item) for item in args.exclude_interaction.split(',')]
 
    print( "*Parameters of the calculation*")
@@ -74,6 +76,7 @@ if __name__ == "__main__":
    print( "dr          :",dr)
    print( "nframe      :",nframe)
    print( "nevery      :",nevery)
+   print( "neigh       :",neigh)
 
    # Deal with the format of the Lammps data file
    if atomtype == 'full':
@@ -164,6 +167,13 @@ if __name__ == "__main__":
    col_yy = col_num['yy']
    col_zz = col_num['zz']
 
+   col_mol = 0
+   if neigh != 'full' and not 'mol' in col_num:
+      print("Error: cannot distinguish between intra and intermolecular interactions without specifying the mol id")
+      sys.exit()
+   if neigh != 'full' and 'mol' in col_num:
+      col_mol = col_num['mol']
+
    # Start iterating over all species
    for species_a in type_of_species:
       for species_b in type_of_species:
@@ -223,12 +233,14 @@ if __name__ == "__main__":
             for ii in range(n_atom):
                line = f.readline().split()
                id = int(line[col_id])
+               molid = int(line[col_mol])
                xx = float(line[col_xx])
                yy = float(line[col_yy])
                zz = float(line[col_zz])
-               pos.update({id:[xx,yy,zz]})
+               pos.update({id:[xx,yy,zz,molid]})
 
             for id_A in ids_of_species[species_a]:
+               molid_A = pos[id_A][3]
                pos_A0 = pos[id_A][0]
                pos_A1 = pos[id_A][1]
                pos_A2 = pos[id_A][2]
@@ -238,6 +250,12 @@ if __name__ == "__main__":
                rmax_sq = rmax * rmax - kTol
                i_dr = 1.0 / dr
                for id_B in ids_of_species[species_b]:
+                  molid_B = pos[id_B][3]
+                  if neigh == "inter" and molid_B == molid_A:
+                     continue
+                  if neigh == "intra" and molid_B != molid_A:
+                     continue
+
                   rAB_0 = pos[id_B][0] - pos_A0
                   rAB_0 -= lx * int(round( rAB_0 * ilx ))
                   rAB_1 = pos[id_B][1] - pos_A1
