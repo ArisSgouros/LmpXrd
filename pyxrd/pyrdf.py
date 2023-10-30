@@ -14,7 +14,7 @@ parser.add_argument('rmax', type=float, help='Max radious')
 parser.add_argument('dr', type=float, help='Step interval')
 parser.add_argument('nframe', type=int, help='number of frames')
 parser.add_argument('nevery', type=int, help='read frame every')
-parser.add_argument('-coltype', type=int, default=2, help='Atom type column; Full=2, Atomic=1')
+parser.add_argument('-atomtype', type=str, default='full', help='Set the atomtype in the Lammps data file (e.g., full, atomic, etc.)')
 parser.add_argument('-rdffile', type=str, default='o.AllRDFs.dat', help='Path of the rdf file')
 
 def GetDumpFormat(filename):
@@ -54,7 +54,7 @@ if __name__ == "__main__":
    dr           = args.dr
    nframe       = args.nframe
    nevery       = args.nevery
-   col_type     = args.coltype
+   atomtype     = args.atomtype
    file_rdf     = args.rdffile
 
    print( "*Parameters of the calculation*")
@@ -66,6 +66,15 @@ if __name__ == "__main__":
    print( "dr          :",dr)
    print( "nframe      :",nframe)
    print( "nevery      :",nevery)
+
+   # Deal with the format of the Lammps data file
+   if atomtype == 'full':
+      col_type = 2
+   elif atomtype == 'atomic':
+      col_type = 1
+   else:
+      print('unsupported format of Lammps data files for the atom type ' + atomtype)
+      sys.exit()
 
    # Initialize the binning
    rbins = int(rmax / dr)

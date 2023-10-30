@@ -15,7 +15,7 @@ parser.add_argument('rmax', type=float, help='Max radious')
 parser.add_argument('dr', type=float, help='Step interval')
 parser.add_argument('qmax', type=float, help='Max wavevector')
 parser.add_argument('dq', type=float, help='wavevector interval')
-parser.add_argument('-coltype', type=int, default=2, help='Atom type column; Full=2, Atomic=1')
+parser.add_argument('-atomtype', type=str, default='full', help='Set the atomtype in the Lammps data file (e.g., full, atomic, etc.)')
 
 def FormFact(p, qq):
    fa = p["c"]
@@ -32,7 +32,7 @@ if __name__ == "__main__":
    dr           = args.dr
    qmax         = args.qmax
    dq           = args.dq
-   col_type     = args.coltype
+   atomtype     = args.atomtype
 
    print( "*Parameters of the calculation*")
    print()
@@ -42,6 +42,15 @@ if __name__ == "__main__":
    print( "dr             :",dr)
    print( "qmax           :",qmax)
    print( "dq             :",dq)
+
+   # Deal with the format of the Lammps data file
+   if atomtype == 'full':
+      col_type = 2
+   elif atomtype == 'atomic':
+      col_type = 1
+   else:
+      print('unsupported format of Lammps data files for the atom type ' + atomtype)
+      sys.exit()
 
    # Initialize the binning
    rbins = int(rmax / dr)
