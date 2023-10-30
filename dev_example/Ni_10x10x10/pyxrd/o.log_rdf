@@ -2,11 +2,12 @@
 
 file_data   : ../gen//o.ni.dat
 file_dump   : ../gen//o.ni.lammpstrj
-file_rdf    : o.AllRDFs.dat
+file_rdf    : o.rdf
 rmax        : 17.6
 dr          : 0.1
 nframe      : 1
 nevery      : 1
+neigh       : full
 Reading Lammps datafile from: ../gen//o.ni.dat ..
 Ni [1]
 There are 4000   Ni atoms ( 1.0 %)

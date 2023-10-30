@@ -1,7 +1,7 @@
 *Parameters of the calculation*
 
 file_data   : ../gen//o.ni.dat
-file_rdf    : o.AllRDFs.dat
+file_rdf    : o.rdf.dat
 rmax           : 17.6
 dr             : 0.1
 qmax           : 20.0
@@ -11,7 +11,7 @@ Ni [1]
 There are 4000   Ni atoms ( 1.0 %)
 There are 4000 atoms in total..
 Printing the atom IDs for each species..
-Reading the partial gr from file o.AllRDFs.dat ..
+Reading the partial gr from file o.rdf.dat ..
 0.0917132325319309
 Reading the atomic form factors from form_factors.dat ..
 

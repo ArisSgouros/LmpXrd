@@ -2,11 +2,12 @@
 
 file_data   : ../gen//o.nacl.dat
 file_dump   : ../gen//o.nacl.lammpstrj
-file_rdf    : o.AllRDFs.dat
+file_rdf    : o.rdf
 rmax        : 25.0
 dr          : 0.1
 nframe      : 1
 nevery      : 1
+neigh       : full
 Reading Lammps datafile from: ../gen//o.nacl.dat ..
 Na [1]
 Cl [2]

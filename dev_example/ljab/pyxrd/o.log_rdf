@@ -2,11 +2,12 @@
 
 file_data   : ../gen//pos_formatted.dat
 file_dump   : ../gen//movie.lammpstrj
-file_rdf    : o.AllRDFs.dat
+file_rdf    : o.rdf
 rmax        : 6.5
 dr          : 0.065
 nframe      : 10
 nevery      : 1
+neigh       : full
 Reading Lammps datafile from: ../gen//pos_formatted.dat ..
 C [1, 2]
 There are 2000   C atoms ( 1.0 %)
