@@ -1,19 +1,19 @@
 *Parameters of the calculation*
 
-dataFileName   : ../gen//pos_formatted.dat
-RDFFileName    : o.AllRDFs.dat
+file_data   : ../gen//pos_formatted.dat
+file_rdf    : o.AllRDFs.dat
 rmax           : 6.5
 dr             : 0.065
 qmax           : 20.0
 dq             : 0.05
-Reading DATAFILE from: ../gen//pos_formatted.dat ..
+Parsing the atom types from the Lammps datafile: ../gen//pos_formatted.dat ..
 C [1, 2]
 There are 2000   C atoms ( 1.0 %)
 There are 2000 atoms in total..
 Printing the atom IDs for each species..
 Reading the partial gr from file o.AllRDFs.dat ..
 0.9103322712790168
-Reading the atomic form factors from FORM_FACTORS.dat ..
+Reading the atomic form factors from form_factors.dat ..
 
 Atomic Form Factors
 species : C

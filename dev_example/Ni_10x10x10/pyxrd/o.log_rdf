@@ -1,12 +1,13 @@
 *Parameters of the calculation*
 
-dataFileName   : ../gen//o.ni.dat
-confFileName   : ../gen//o.ni.lammpstrj
-rmax           : 17.6
-dr             : 0.1
-NFrames        : 1
-NEvery         : 1
-Reading DATAFILE from: ../gen//o.ni.dat ..
+file_data   : ../gen//o.ni.dat
+file_dump   : ../gen//o.ni.lammpstrj
+file_rdf    : o.AllRDFs.dat
+rmax        : 17.6
+dr          : 0.1
+nframe      : 1
+nevery      : 1
+Reading Lammps datafile from: ../gen//o.ni.dat ..
 Ni [1]
 There are 4000   Ni atoms ( 1.0 %)
 There are 4000 atoms in total..

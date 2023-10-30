@@ -1,12 +1,13 @@
 *Parameters of the calculation*
 
-dataFileName   : ../gen//o.nacl.dat
-confFileName   : ../gen//o.nacl.lammpstrj
-rmax           : 25.0
-dr             : 0.1
-NFrames        : 1
-NEvery         : 1
-Reading DATAFILE from: ../gen//o.nacl.dat ..
+file_data   : ../gen//o.nacl.dat
+file_dump   : ../gen//o.nacl.lammpstrj
+file_rdf    : o.AllRDFs.dat
+rmax        : 25.0
+dr          : 0.1
+nframe      : 1
+nevery      : 1
+Reading Lammps datafile from: ../gen//o.nacl.dat ..
 Na [1]
 Cl [2]
 There are 4000   Na atoms ( 0.5 %)
@@ -14,4 +15,8 @@ There are 4000   Cl atoms ( 0.5 %)
 There are 8000 atoms in total..
 Printing the atom IDs for each species..
 RDF computation of Na -> Na ..
+0 / 1 frames..
+RDF computation of Na -> Cl ..
+0 / 1 frames..
+RDF computation of Cl -> Cl ..
 0 / 1 frames..

@@ -1,12 +1,12 @@
 *Parameters of the calculation*
 
-dataFileName   : ../gen//o.nacl.dat
-RDFFileName    : o.AllRDFs.dat
+file_data   : ../gen//o.nacl.dat
+file_rdf    : o.AllRDFs.dat
 rmax           : 25.0
 dr             : 0.1
 qmax           : 20.0
 dq             : 0.01
-Reading DATAFILE from: ../gen//o.nacl.dat ..
+Parsing the atom types from the Lammps datafile: ../gen//o.nacl.dat ..
 Na [1]
 Cl [2]
 There are 4000   Na atoms ( 0.5 %)
@@ -15,7 +15,7 @@ There are 8000 atoms in total..
 Printing the atom IDs for each species..
 Reading the partial gr from file o.AllRDFs.dat ..
 0.0445868174755809
-Reading the atomic form factors from FORM_FACTORS.dat ..
+Reading the atomic form factors from form_factors.dat ..
 
 Atomic Form Factors
 species : Na
