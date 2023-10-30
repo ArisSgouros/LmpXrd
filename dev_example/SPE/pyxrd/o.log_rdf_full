@@ -1,0 +1,317 @@
+*Parameters of the calculation*
+
+file_data   : ../CG.dat
+file_dump   : ../CG.lammpstrj
+file_rdf    : o.rdf_full
+rmax        : 15.0
+dr          : 0.5
+nframe      : 20
+nevery      : 1
+neigh       : full
+Reading Lammps datafile from: ../CG.dat ..
+W [6]
+SB [1]
+SO [2]
+SN [3]
+SS [4]
+There are 800   W atoms ( 0.9803921568627451 %)
+There are 4   SB atoms ( 0.004901960784313725 %)
+There are 4   SO atoms ( 0.004901960784313725 %)
+There are 4   SN atoms ( 0.004901960784313725 %)
+There are 4   SS atoms ( 0.004901960784313725 %)
+There are 816 atoms in total..
+Printing the atom IDs for each species..
+RDF computation of W -> SB ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of W -> SO ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of W -> SN ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of W -> SS ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of SB -> SB ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of SB -> SO ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of SB -> SN ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of SB -> SS ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of SO -> SO ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of SO -> SN ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of SO -> SS ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of SN -> SN ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of SN -> SS ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
+RDF computation of SS -> SS ..
+0 / 20 frames..
+1 / 20 frames..
+2 / 20 frames..
+3 / 20 frames..
+4 / 20 frames..
+5 / 20 frames..
+6 / 20 frames..
+7 / 20 frames..
+8 / 20 frames..
+9 / 20 frames..
+10 / 20 frames..
+11 / 20 frames..
+12 / 20 frames..
+13 / 20 frames..
+14 / 20 frames..
+15 / 20 frames..
+16 / 20 frames..
+17 / 20 frames..
+18 / 20 frames..
+19 / 20 frames..
