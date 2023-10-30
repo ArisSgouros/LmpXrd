@@ -15,8 +15,9 @@ parser.add_argument('dr', type=float, help='Step interval')
 parser.add_argument('nframe', type=int, help='number of frames')
 parser.add_argument('nevery', type=int, help='read frame every')
 parser.add_argument('-atomtype', type=str, default='full', help='Set the atomtype in the Lammps data file (e.g., full, atomic, etc.)')
-parser.add_argument('-rdffile', type=str, default='o.AllRDFs.dat', help='Path of the rdf file')
+parser.add_argument('-rdffile', type=str, default='o.rdf', help='Path of the rdf file')
 parser.add_argument('-neigh', type=str, default='full', help='Set the considered neighbors: full, inter and intra')
+parser.add_argument('-export_individual', type=int, default=1, help='Export individual files for each pair')
 parser.add_argument('-exclude_interaction', '--exclude_interaction', type=str, help='Exclude one or more interaction pairs')
 
 def GetDumpFormat(filename):
@@ -65,6 +66,7 @@ if __name__ == "__main__":
    atomtype     = args.atomtype
    file_rdf     = args.rdffile
    neigh        = args.neigh
+   export_indiv = bool(args.export_individual)
    exclude_inter = []
    if args.exclude_interaction:
       exclude_inter = [str(item) for item in args.exclude_interaction.split(',')]
@@ -277,7 +279,6 @@ if __name__ == "__main__":
 
          f.close()
 
-         g = open('o.'+species_a+'-'+species_b+'.dat', 'w')
          for m in range(rbins):
             rho = float(N["all"]) / volume
             shell_vol = 4.0 / 3.0 * np.pi * (pow(m+1, 3) - pow(m, 3)) * pow(dr, 3)
@@ -285,15 +286,18 @@ if __name__ == "__main__":
             rdf[m] = float(rdf[m]) / float(n_sample)
             rdf[m] *= float(N["all"]) / (float(N[species_a]) * float(N[species_b]) * nid)
 
-            g.write("%10d %10.6f %10.6f %10.6f\n" % (m, r_range[m], rdf[m], shell_vol))
-         g.close()
+         if export_indiv:
+            g = open(file_rdf+'.'+species_a+'-'+species_b+'.dat', 'w')
+            for m in range(rbins):
+               g.write("%10d %10.6f %10.6f\n" % (m, r_range[m], rdf[m]))
+            g.close()
 
-         # Set the completed flags to True in order to skip a similar computationi
          gab_all[species_a+"_"+species_b] = rdf
          gab_all[species_b+"_"+species_a] = rdf
 
-   g = open(file_rdf, 'w')
+   g = open(file_rdf+'.dat', 'w')
    g.write("Nall = %-20s\n" % (str(N["all"])))
+   rho = float(N["all"]) / volume
    g.write("rho = %-.16f\n" % (rho))
    g.write("%-20s" % ("type"))
    for key in gab_all:
