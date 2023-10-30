@@ -16,24 +16,6 @@ parser.add_argument('nframe', type=int, help='number of frames')
 parser.add_argument('nevery', type=int, help='read frame every')
 parser.add_argument('-coltype', type=int, default=2, help='Atom type column; Full=2, Atomic=1')
 
-args = parser.parse_args()
-dataFileName = args.datafile
-confFileName = args.dumpfile
-rmax         = args.rmax
-dr           = args.dr
-nFrame       = args.nframe
-nEvery       = args.nevery
-col_type     = args.coltype
-
-print( "*Parameters of the calculation*")
-print()
-print( "dataFileName   :",dataFileName)
-print( "confFileName   :",confFileName)
-print( "rmax           :",rmax)
-print( "dr             :",dr)
-print( "NFrames        :",nFrame)
-print( "NEvery         :",nEvery)
-
 def GetDumpFormat(filename):
    col_id = col_xx = col_yy = col_zz = -1
    f = open(confFileName,"r")
@@ -63,242 +45,260 @@ def GetDumpFormat(filename):
       sys.exit()
    return col_id, col_xx, col_yy, col_zz
 
-#
-# Initialize the histograms
-#
-rbins = int(rmax / dr)
-r_range = [(ii+0.5)*dr for ii in range(rbins)]
+if __name__ == "__main__":
+   args = parser.parse_args()
+   dataFileName = args.datafile
+   confFileName = args.dumpfile
+   rmax         = args.rmax
+   dr           = args.dr
+   nFrame       = args.nframe
+   nEvery       = args.nevery
+   col_type     = args.coltype
 
-#
-# Read the DATA file and get the atom types
-#
-print( "Reading DATAFILE from:",dataFileName,"..")
+   print( "*Parameters of the calculation*")
+   print()
+   print( "dataFileName   :",dataFileName)
+   print( "confFileName   :",confFileName)
+   print( "rmax           :",rmax)
+   print( "dr             :",dr)
+   print( "NFrames        :",nFrame)
+   print( "NEvery         :",nEvery)
 
-fileLines = []
-iLine = 0
+   #
+   # Initialize the histograms
+   #
+   rbins = int(rmax / dr)
+   r_range = [(ii+0.5)*dr for ii in range(rbins)]
 
-with open(dataFileName,"r") as openFileObject:
-   for curLine in openFileObject:
+   #
+   # Read the DATA file and get the atom types
+   #
+   print( "Reading DATAFILE from:",dataFileName,"..")
 
-      if "atom types" in curLine:
-         nAtomTypes = int(curLine.split()[0])
-      if "atoms" in curLine:
-         nAtoms = int(curLine.split()[0])
-      if "Masses" in curLine:
-         typesLineStart = iLine + 2
-         typesLineEnd = typesLineStart + nAtomTypes
-      if "Atoms" in curLine:
-         atomLineStart = iLine + 2
-         atomLineEnd = atomLineStart + nAtoms
+   fileLines = []
+   iLine = 0
 
-      fileLines.append(curLine)
-      iLine += 1
+   with open(dataFileName,"r") as openFileObject:
+      for curLine in openFileObject:
 
-typesOfSpecies = {}
-speciesOfType = {}
-for curLine in range(typesLineStart,typesLineEnd):
-   curLineSplit = fileLines[curLine].split()
-   species = curLineSplit[3]
-   type = int(curLineSplit[0])
+         if "atom types" in curLine:
+            nAtomTypes = int(curLine.split()[0])
+         if "atoms" in curLine:
+            nAtoms = int(curLine.split()[0])
+         if "Masses" in curLine:
+            typesLineStart = iLine + 2
+            typesLineEnd = typesLineStart + nAtomTypes
+         if "Atoms" in curLine:
+            atomLineStart = iLine + 2
+            atomLineEnd = atomLineStart + nAtoms
 
-   if species in typesOfSpecies.keys():
-      typesOfSpecies[species].append(type)
-   else:
-      typesOfSpecies[species] = [type]
+         fileLines.append(curLine)
+         iLine += 1
 
-   speciesOfType[type] = species
+   typesOfSpecies = {}
+   speciesOfType = {}
+   for curLine in range(typesLineStart,typesLineEnd):
+      curLineSplit = fileLines[curLine].split()
+      species = curLineSplit[3]
+      type = int(curLineSplit[0])
 
-for species in typesOfSpecies:
-   print( species, typesOfSpecies[species])
+      if species in typesOfSpecies.keys():
+         typesOfSpecies[species].append(type)
+      else:
+         typesOfSpecies[species] = [type]
 
-IdsOfSpecies = {}
-for species in typesOfSpecies:
-   IdsOfSpecies[species] = []
+      speciesOfType[type] = species
 
-for curLine in range(atomLineStart,atomLineEnd):
-   curLineSplit = fileLines[curLine].split()
-   ID = int(curLineSplit[0])
-   type = int(curLineSplit[col_type])
-   species = speciesOfType[type]
-   IdsOfSpecies[species].append(ID)
+   for species in typesOfSpecies:
+      print( species, typesOfSpecies[species])
 
-N = {}
-C = {}
-N["all"] = 0
-C["all"] = 1.0
-for species in typesOfSpecies:
-   N[species] = len(IdsOfSpecies[species])
-   N["all"] += N[species]
+   IdsOfSpecies = {}
+   for species in typesOfSpecies:
+      IdsOfSpecies[species] = []
 
-for species in typesOfSpecies:
-   C[species] = float(N[species]) / float(N["all"])
-   print( "There are",N[species]," ",species,"atoms (",C[species],"%)")
+   for curLine in range(atomLineStart,atomLineEnd):
+      curLineSplit = fileLines[curLine].split()
+      ID = int(curLineSplit[0])
+      type = int(curLineSplit[col_type])
+      species = speciesOfType[type]
+      IdsOfSpecies[species].append(ID)
 
-print( "There are",N["all"], "atoms in total..")
+   N = {}
+   C = {}
+   N["all"] = 0
+   C["all"] = 1.0
+   for species in typesOfSpecies:
+      N[species] = len(IdsOfSpecies[species])
+      N["all"] += N[species]
 
-#Write the atom IDs for each species in a file
-print( "Printing the atom IDs for each species..")
-for species in typesOfSpecies:
-   f = open('o.IDS.'+species+'.dat', 'w')
-   f.write(species+"\n")
-   for ID in IdsOfSpecies[species]:
-      f.write(str(ID)+" ")
-f.close()
+   for species in typesOfSpecies:
+      C[species] = float(N[species]) / float(N["all"])
+      print( "There are",N[species]," ",species,"atoms (",C[species],"%)")
 
-# Track the computed RDFs so that we wont have to recompute them again
-gab_all = {}
+   print( "There are",N["all"], "atoms in total..")
 
-#
-# The section computes the RDFs from the trajectory files
-#
+   #Write the atom IDs for each species in a file
+   print( "Printing the atom IDs for each species..")
+   for species in typesOfSpecies:
+      f = open('o.IDS.'+species+'.dat', 'w')
+      f.write(species+"\n")
+      for ID in IdsOfSpecies[species]:
+         f.write(str(ID)+" ")
+   f.close()
 
-# Check the format of the dump file
-col_id, col_xx, col_yy, col_zz = GetDumpFormat(confFileName)
+   # Track the computed RDFs so that we wont have to recompute them again
+   gab_all = {}
 
-# Start iterating over all species
-for species_A in typesOfSpecies:
-   for species_B in typesOfSpecies:
+   #
+   # The section computes the RDFs from the trajectory files
+   #
 
-      if species_A+"_"+species_B in gab_all.keys() or species_B+"_"+species_A in gab_all.keys():
-         continue
+   # Check the format of the dump file
+   col_id, col_xx, col_yy, col_zz = GetDumpFormat(confFileName)
 
-      print( "RDF computation of",species_A,"->",species_B,"..")
+   # Start iterating over all species
+   for species_A in typesOfSpecies:
+      for species_B in typesOfSpecies:
 
-      # Initialize the array of vectors with dimensions:
-      #
-      # Load the atom trajectories
-      #
-      f = open(confFileName,"r")
-
-      RDF = [0] * rbins
-      rAB = [0.0] * 3
-
-      nSamples = 0
-      Volume = 0.0
-      for iFrame in range(nFrame):
-
-         if iFrame % nEvery != 0:
-            for ii in range(nAtoms + 9):
-               f.readline()
+         if species_A+"_"+species_B in gab_all.keys() or species_B+"_"+species_A in gab_all.keys():
             continue
-         else:
-            nSamples += 1
 
-         print( iFrame, "/", nFrame, "frames..")
+         print( "RDF computation of",species_A,"->",species_B,"..")
 
-         f.readline()                # ITEM: TIMESTEP
-         Timestep = int(f.readline())
-
-         f.readline()                # ITEM: NUMBER OF ATOMS
-         f.readline()
-         f.readline()                # ITEM: BOX BOUNDS
-
-         X_BOX = f.readline().split()  # xlo xhi
-         xlo = float(X_BOX[0])
-         xhi = float(X_BOX[1])
-         Y_BOX = f.readline().split()  # xlo xhi
-         ylo = float(Y_BOX[0])
-         yhi = float(Y_BOX[1])
-         Z_BOX = f.readline().split()  # xlo xhi
-         zlo = float(Z_BOX[0])
-         zhi = float(Z_BOX[1])
-
-         L0 = xhi - xlo
-         L1 = yhi - ylo
-         L2 = zhi - zlo
-
-         Volume += L0 * L1 * L2
-
-         f.readline()                # ITEM: FORMAT
+         # Initialize the array of vectors with dimensions:
          #
-         # Loop over all atoms and create a
-         # dictionary for atom IDs and coordinates
+         # Load the atom trajectories
          #
-         pos = {}
-         for ii in range(nAtoms):
-            line = f.readline().split()
-            id = int(line[col_id])
-            xx = float(line[col_xx])
-            yy = float(line[col_yy])
-            zz = float(line[col_zz])
-            pos.update({id:[xx,yy,zz]})
+         f = open(confFileName,"r")
 
-         for id_A in IdsOfSpecies[species_A]:
+         RDF = [0] * rbins
+         rAB = [0.0] * 3
 
-            # Start of optimizations
-            pos_A0 = pos[id_A][0]
-            pos_A1 = pos[id_A][1]
-            pos_A2 = pos[id_A][2]
-            iL0 = 1.0 / L0
-            iL1 = 1.0 / L1
-            iL2 = 1.0 / L2
-            rmax_sq = rmax * rmax - kTol
-            i_dr = 1.0 / dr
-            # End of optimizations
+         nSamples = 0
+         Volume = 0.0
+         for iFrame in range(nFrame):
+            if iFrame % nEvery != 0:
+               for ii in range(nAtoms + 9):
+                  f.readline()
+               continue
+            else:
+               nSamples += 1
 
-            for id_B in IdsOfSpecies[species_B]:
+            print( iFrame, "/", nFrame, "frames..")
 
-               rAB_0 = pos[id_B][0] - pos_A0
-               rAB_0 -= L0 * int(round( rAB_0 * iL0 ))
-               rAB_1 = pos[id_B][1] - pos_A1
-               rAB_1 -= L1 * int(round( rAB_1 * iL1 ))
-               rAB_2 = pos[id_B][2] - pos_A2
-               rAB_2 -= L2 * int(round( rAB_2 * iL2 ))
+            f.readline()                # ITEM: TIMESTEP
+            Timestep = int(f.readline())
 
-               rAB_sq = rAB_0 * rAB_0 + rAB_1 * rAB_1 + rAB_2 * rAB_2
+            f.readline()                # ITEM: NUMBER OF ATOMS
+            f.readline()
+            f.readline()                # ITEM: BOX BOUNDS
 
-               if( rAB_sq >= rmax_sq):
-                  continue
+            X_BOX = f.readline().split()  # xlo xhi
+            xlo = float(X_BOX[0])
+            xhi = float(X_BOX[1])
+            Y_BOX = f.readline().split()  # xlo xhi
+            ylo = float(Y_BOX[0])
+            yhi = float(Y_BOX[1])
+            Z_BOX = f.readline().split()  # xlo xhi
+            zlo = float(Z_BOX[0])
+            zhi = float(Z_BOX[1])
 
-               rAB = np.sqrt(rAB_sq)
-               m = int(rAB * i_dr)
-               RDF[m] += 1
+            L0 = xhi - xlo
+            L1 = yhi - ylo
+            L2 = zhi - zlo
 
-      Volume /= nSamples
-      RDF[0] = 0
+            Volume += L0 * L1 * L2
 
-      f.close()
+            f.readline()                # ITEM: FORMAT
+            #
+            # Loop over all atoms and create a
+            # dictionary for atom IDs and coordinates
+            #
+            pos = {}
+            for ii in range(nAtoms):
+               line = f.readline().split()
+               id = int(line[col_id])
+               xx = float(line[col_xx])
+               yy = float(line[col_yy])
+               zz = float(line[col_zz])
+               pos.update({id:[xx,yy,zz]})
 
-      g = open('o.'+species_A+'-'+species_B+'.dat', 'w')
-      for m in range(rbins):
+            for id_A in IdsOfSpecies[species_A]:
 
-         rho = float(N["all"]) / Volume
-         shell_vol = 4.0 / 3.0 * np.pi * (pow(m+1, 3) - pow(m, 3)) * pow(dr, 3)
-         nid = shell_vol * rho
+               # Start of optimizations
+               pos_A0 = pos[id_A][0]
+               pos_A1 = pos[id_A][1]
+               pos_A2 = pos[id_A][2]
+               iL0 = 1.0 / L0
+               iL1 = 1.0 / L1
+               iL2 = 1.0 / L2
+               rmax_sq = rmax * rmax - kTol
+               i_dr = 1.0 / dr
+               # End of optimizations
 
-         RDF[m] = float(RDF[m]) / float(nSamples)
-         RDF[m] *= float(N["all"]) / (float(N[species_A]) * float(N[species_B]) * nid)
+               for id_B in IdsOfSpecies[species_B]:
 
-         g.write("%10d %10.6f %10.6f %10.6f\n" % (m, r_range[m], RDF[m], shell_vol))
-      g.close()
+                  rAB_0 = pos[id_B][0] - pos_A0
+                  rAB_0 -= L0 * int(round( rAB_0 * iL0 ))
+                  rAB_1 = pos[id_B][1] - pos_A1
+                  rAB_1 -= L1 * int(round( rAB_1 * iL1 ))
+                  rAB_2 = pos[id_B][2] - pos_A2
+                  rAB_2 -= L2 * int(round( rAB_2 * iL2 ))
 
-      # Set the completed flags to True in order to skip a similar computationi
-      gab_all[species_A+"_"+species_B] = RDF
-      gab_all[species_B+"_"+species_A] = RDF
+                  rAB_sq = rAB_0 * rAB_0 + rAB_1 * rAB_1 + rAB_2 * rAB_2
 
-g = open('o.AllRDFs.dat', 'w')
-g.write("Nall = %-20s\n" % (str(N["all"])))
-g.write("rho = %-.16f\n" % (rho))
-g.write("%-20s" % ("type"))
-for key in gab_all:
-   g.write("%-20s" % (key))
-g.write("\n")
+                  if( rAB_sq >= rmax_sq):
+                     continue
 
-g.write("%-20s" % ("ca"))
-for key in gab_all:
-   species_A = key.split("_")[0]
-   g.write("%-20s" % (str(C[species_A])))
-g.write("\n")
+                  rAB = np.sqrt(rAB_sq)
+                  m = int(rAB * i_dr)
+                  RDF[m] += 1
 
-g.write("%-20s" % ("cb"))
-for key in gab_all:
-   species_B = key.split("_")[1]
-   g.write("%-20s" % (str(C[species_B])))
-g.write("\n")
+         Volume /= nSamples
+         RDF[0] = 0
 
-for ir in range(rbins):
-   g.write("%-20.6f" %(r_range[ir]))
+         f.close()
+
+         g = open('o.'+species_A+'-'+species_B+'.dat', 'w')
+         for m in range(rbins):
+
+            rho = float(N["all"]) / Volume
+            shell_vol = 4.0 / 3.0 * np.pi * (pow(m+1, 3) - pow(m, 3)) * pow(dr, 3)
+            nid = shell_vol * rho
+
+            RDF[m] = float(RDF[m]) / float(nSamples)
+            RDF[m] *= float(N["all"]) / (float(N[species_A]) * float(N[species_B]) * nid)
+
+            g.write("%10d %10.6f %10.6f %10.6f\n" % (m, r_range[m], RDF[m], shell_vol))
+         g.close()
+
+         # Set the completed flags to True in order to skip a similar computationi
+         gab_all[species_A+"_"+species_B] = RDF
+         gab_all[species_B+"_"+species_A] = RDF
+
+   g = open('o.AllRDFs.dat', 'w')
+   g.write("Nall = %-20s\n" % (str(N["all"])))
+   g.write("rho = %-.16f\n" % (rho))
+   g.write("%-20s" % ("type"))
    for key in gab_all:
-      g.write("%-20.6f" % (gab_all[key][ir]))
+      g.write("%-20s" % (key))
    g.write("\n")
-g.close()
+
+   g.write("%-20s" % ("ca"))
+   for key in gab_all:
+      species_A = key.split("_")[0]
+      g.write("%-20s" % (str(C[species_A])))
+   g.write("\n")
+
+   g.write("%-20s" % ("cb"))
+   for key in gab_all:
+      species_B = key.split("_")[1]
+      g.write("%-20s" % (str(C[species_B])))
+   g.write("\n")
+
+   for ir in range(rbins):
+      g.write("%-20.6f" %(r_range[ir]))
+      for key in gab_all:
+         g.write("%-20.6f" % (gab_all[key][ir]))
+      g.write("\n")
+   g.close()
