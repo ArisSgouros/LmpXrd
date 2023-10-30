@@ -8,17 +8,15 @@ qmax           : 20.0
 dq             : 0.05
 NFrames        : 1
 NEvery         : 1
-10
-col_type   :  2
 
-The partial gr will be computed from scratch
+The partial gr will be read from: o.AllRDFs.dat
 Reading DATAFILE from: ../gen//o.ni.dat ..
 Ni [1]
 There are 4000   Ni atoms ( 1.0 %)
 There are 4000 atoms in total..
 Printing the atom IDs for each species..
-RDF computation of Ni -> Ni ..
-0 / 1 frames..
+Reading the partial gr from file o.AllRDFs.dat ..
+0.0917132325319309
 Reading the atomic form factors from FORM_FACTORS.dat ..
 
 Atomic Form Factors

@@ -1,0 +1,45 @@
+*Parameters of the calculation*
+
+dataFileName   : ../gen//o.nacl.dat
+confFileName   : ../gen//o.nacl.lammpstrj
+rmax           : 25.0
+dr             : 0.1
+qmax           : 20.0
+dq             : 0.05
+NFrames        : 1
+NEvery         : 1
+
+The partial gr will be computed from scratch
+Reading DATAFILE from: ../gen//o.nacl.dat ..
+Na [1]
+Cl [2]
+There are 4000   Na atoms ( 0.5 %)
+There are 4000   Cl atoms ( 0.5 %)
+There are 8000 atoms in total..
+Printing the atom IDs for each species..
+RDF computation of Na -> Na ..
+0 / 1 frames..
+RDF computation of Na -> Cl ..
+0 / 1 frames..
+RDF computation of Cl -> Cl ..
+0 / 1 frames..
+Reading the atomic form factors from FORM_FACTORS.dat ..
+
+Atomic Form Factors
+species : Na
+a [4.7626, 3.1736, 1.2674, 1.1128]
+b [3.285, 8.8422, 0.3136, 129.424]
+c 0.676
+species : Cl
+a [11.4604, 7.1964, 6.2556, 1.6455]
+b [0.0104, 1.1662, 18.5194, 47.7784]
+c -9.5574
+
+Computation of the Faber-Ziman structure factor..
+
+Computation of the X-ray weighted structure factor..
+
+Computation of the coherent scattering intensity..
+
+Done!
+Done!
