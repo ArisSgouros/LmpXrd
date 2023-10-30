@@ -15,6 +15,7 @@ parser.add_argument('dr', type=float, help='Step interval')
 parser.add_argument('nframe', type=int, help='number of frames')
 parser.add_argument('nevery', type=int, help='read frame every')
 parser.add_argument('-coltype', type=int, default=2, help='Atom type column; Full=2, Atomic=1')
+parser.add_argument('-rdffile', type=str, default='o.AllRDFs.dat', help='Path of the rdf file')
 
 def GetDumpFormat(filename):
    col_id = col_xx = col_yy = col_zz = -1
@@ -54,11 +55,13 @@ if __name__ == "__main__":
    nframe       = args.nframe
    nevery       = args.nevery
    col_type     = args.coltype
+   file_rdf     = args.rdffile
 
    print( "*Parameters of the calculation*")
    print()
    print( "file_data   :",file_data)
    print( "file_dump   :",file_dump)
+   print( "file_rdf    :",file_rdf)
    print( "rmax        :",rmax)
    print( "dr          :",dr)
    print( "nframe      :",nframe)
@@ -246,7 +249,7 @@ if __name__ == "__main__":
          gab_all[species_a+"_"+species_b] = rdf
          gab_all[species_b+"_"+species_a] = rdf
 
-   g = open('o.AllRDFs.dat', 'w')
+   g = open(file_rdf, 'w')
    g.write("Nall = %-20s\n" % (str(N["all"])))
    g.write("rho = %-.16f\n" % (rho))
    g.write("%-20s" % ("type"))

@@ -10,6 +10,7 @@ kTol = 1e-6
 parser = argparse.ArgumentParser(description='Decimate lammps dump files')
 parser.add_argument('datafile', type=str, help='Path of the lammps data file')
 parser.add_argument('rdffile', type=str, default="", help='Path of the RDF file')
+parser.add_argument('formfactorfile', type=str, default="FORM_FACTORS.dat", help='Path of the form factors')
 parser.add_argument('rmax', type=float, help='Max radious')
 parser.add_argument('dr', type=float, help='Step interval')
 parser.add_argument('qmax', type=float, help='Max wavevector')
@@ -26,6 +27,7 @@ if __name__ == "__main__":
    args = parser.parse_args()
    file_data = args.datafile
    file_rdf  = args.rdffile
+   file_FF   = args.formfactorfile
    rmax         = args.rmax
    dr           = args.dr
    qmax         = args.qmax
@@ -145,9 +147,6 @@ if __name__ == "__main__":
    #
    # The structure factors were retrieved from :
    # http://lampx.tugraz.at/~hadley/ss1/crystaldiffraction/atomicformfactors/formfactors.php
-
-   file_FF = "FORM_FACTORS.dat"
-
    print( "Reading the atomic form factors from",file_FF,"..\n")
 
    FFp = {}
