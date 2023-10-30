@@ -1,15 +1,11 @@
 *Parameters of the calculation*
 
 dataFileName   : ../gen//o.nacl.dat
-confFileName   : ../gen//o.nacl.lammpstrj
+RDFFileName    : o.AllRDFs.dat
 rmax           : 25.0
 dr             : 0.1
 qmax           : 20.0
 dq             : 0.01
-NFrames        : 1
-NEvery         : 1
-
-The partial gr will be read from: o.AllRDFs.dat
 Reading DATAFILE from: ../gen//o.nacl.dat ..
 Na [1]
 Cl [2]

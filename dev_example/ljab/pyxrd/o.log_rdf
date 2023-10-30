@@ -4,12 +4,8 @@ dataFileName   : ../gen//pos_formatted.dat
 confFileName   : ../gen//movie.lammpstrj
 rmax           : 6.5
 dr             : 0.065
-qmax           : 20.0
-dq             : 0.05
 NFrames        : 10
 NEvery         : 1
-
-The partial gr will be computed from scratch
 Reading DATAFILE from: ../gen//pos_formatted.dat ..
 C [1, 2]
 There are 2000   C atoms ( 1.0 %)
@@ -26,19 +22,3 @@ RDF computation of C -> C ..
 7 / 10 frames..
 8 / 10 frames..
 9 / 10 frames..
-Reading the atomic form factors from FORM_FACTORS.dat ..
-
-Atomic Form Factors
-species : C
-a [2.31, 1.02, 1.5886, 0.865]
-b [20.8439, 10.2075, 0.5687, 51.6512]
-c 0.2156
-
-Computation of the Faber-Ziman structure factor..
-
-Computation of the X-ray weighted structure factor..
-
-Computation of the coherent scattering intensity..
-
-Done!
-Done!

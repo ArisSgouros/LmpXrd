@@ -1,15 +1,11 @@
 *Parameters of the calculation*
 
 dataFileName   : ../gen//pos_formatted.dat
-confFileName   : ../gen//movie.lammpstrj
+RDFFileName    : o.AllRDFs.dat
 rmax           : 6.5
 dr             : 0.065
 qmax           : 20.0
 dq             : 0.05
-NFrames        : 10
-NEvery         : 1
-
-The partial gr will be read from: o.AllRDFs.dat
 Reading DATAFILE from: ../gen//pos_formatted.dat ..
 C [1, 2]
 There are 2000   C atoms ( 1.0 %)

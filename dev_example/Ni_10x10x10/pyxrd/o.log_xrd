@@ -1,15 +1,11 @@
 *Parameters of the calculation*
 
 dataFileName   : ../gen//o.ni.dat
-confFileName   : ../gen//o.ni.lammpstrj
+RDFFileName    : o.AllRDFs.dat
 rmax           : 17.6
 dr             : 0.1
 qmax           : 20.0
 dq             : 0.05
-NFrames        : 1
-NEvery         : 1
-
-The partial gr will be read from: o.AllRDFs.dat
 Reading DATAFILE from: ../gen//o.ni.dat ..
 Ni [1]
 There are 4000   Ni atoms ( 1.0 %)
