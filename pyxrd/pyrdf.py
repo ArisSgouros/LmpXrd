@@ -65,7 +65,9 @@ if __name__ == "__main__":
    atomtype     = args.atomtype
    file_rdf     = args.rdffile
    neigh        = args.neigh
-   exclude_inter = [str(item) for item in args.exclude_interaction.split(',')]
+   exclude_inter = []
+   if args.exclude_interaction:
+      exclude_inter = [str(item) for item in args.exclude_interaction.split(',')]
 
    print( "*Parameters of the calculation*")
    print()
