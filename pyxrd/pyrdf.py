@@ -16,6 +16,7 @@ parser.add_argument('nframe', type=int, help='number of frames')
 parser.add_argument('nevery', type=int, help='read frame every')
 parser.add_argument('-atomtype', type=str, default='full', help='Set the atomtype in the Lammps data file (e.g., full, atomic, etc.)')
 parser.add_argument('-rdffile', type=str, default='o.AllRDFs.dat', help='Path of the rdf file')
+parser.add_argument('-exclude_interaction', '--exclude_interaction', type=str, help='Exclude one or more interaction pairs')
 
 def GetDumpFormat(filename):
    col = {}
@@ -62,6 +63,7 @@ if __name__ == "__main__":
    nevery       = args.nevery
    atomtype     = args.atomtype
    file_rdf     = args.rdffile
+   exclude_inter = [str(item) for item in args.exclude_interaction.split(',')]
 
    print( "*Parameters of the calculation*")
    print()
@@ -167,6 +169,8 @@ if __name__ == "__main__":
       for species_b in type_of_species:
 
          if species_a+"_"+species_b in gab_all.keys() or species_b+"_"+species_a in gab_all.keys():
+            continue
+         if species_a+"_"+species_b in exclude_inter or species_b+"_"+species_a in exclude_inter:
             continue
 
          print( "RDF computation of",species_a,"->",species_b,"..")
