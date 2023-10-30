@@ -18,7 +18,7 @@ parser.add_argument('-atomtype', type=str, default='full', help='Set the atomtyp
 parser.add_argument('-rdffile', type=str, default='o.AllRDFs.dat', help='Path of the rdf file')
 
 def GetDumpFormat(filename):
-   col_id = col_xx = col_yy = col_zz = -1
+   col = {}
    f = open(filename,"r")
    line = ""
    for ii in range(9):
@@ -29,22 +29,28 @@ def GetDumpFormat(filename):
    for icol in range(len(header)):
       attrib = header[icol]
       if attrib == 'id':
-         col_id = icol
+         col['id'] = icol
       if attrib in ['x', 'xu', 'xs']:
-         col_xx = icol
+         col['xx'] = icol
       if attrib in ['y', 'yu', 'ys']:
-         col_yy = icol
+         col['yy'] = icol
       if attrib in ['z', 'zu', 'zs']:
-         col_zz = icol
-   if -1 in [col_id, col_xx, col_yy, col_zz]:
-      print("error with column ids in dump file")
-      print("header: ", line)
-      print("Id    : ", col_id)
-      print("x     : ", col_xx)
-      print("y     : ", col_yy)
-      print("z     : ", col_zz)
+         col['zz'] = icol
+      if attrib in ['mol']:
+         col['mol'] = icol
+   if not 'id' in col:
+      print('col id not found in the dump file')
       sys.exit()
-   return col_id, col_xx, col_yy, col_zz
+   if not 'xx' in col:
+      print('col x not found in the dump file')
+      sys.exit()
+   if not 'yy' in col:
+      print('col yy not found in the dump file')
+      sys.exit()
+   if not 'zz' in col:
+      print('col zz not found in the dump file')
+      sys.exit()
+   return col
 
 if __name__ == "__main__":
    args = parser.parse_args()
@@ -150,7 +156,11 @@ if __name__ == "__main__":
    gab_all = {}
 
    # Check the format of the dump file
-   col_id, col_xx, col_yy, col_zz = GetDumpFormat(file_dump)
+   col_num = GetDumpFormat(file_dump)
+   col_id = col_num['id']
+   col_xx = col_num['xx']
+   col_yy = col_num['yy']
+   col_zz = col_num['zz']
 
    # Start iterating over all species
    for species_a in type_of_species:
