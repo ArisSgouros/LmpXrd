@@ -24,8 +24,8 @@ def FormFact(p, qq):
 
 if __name__ == "__main__":
    args = parser.parse_args()
-   dataFileName = args.datafile
-   RDFFileName  = args.rdffile
+   file_data = args.datafile
+   file_rdf  = args.rdffile
    rmax         = args.rmax
    dr           = args.dr
    qmax         = args.qmax
@@ -34,85 +34,79 @@ if __name__ == "__main__":
 
    print( "*Parameters of the calculation*")
    print()
-   print( "dataFileName   :",dataFileName)
-   print( "RDFFileName    :",RDFFileName)
+   print( "file_data   :",file_data)
+   print( "file_rdf    :",file_rdf)
    print( "rmax           :",rmax)
    print( "dr             :",dr)
    print( "qmax           :",qmax)
    print( "dq             :",dq)
 
-   #
-   # Initialize the histograms
-   #
+   # Initialize the binning
    rbins = int(rmax / dr)
    r_range = [(ii+0.5)*dr for ii in range(rbins)]
-
    qmin = 1e-5
    qbins = int(qmax / dq)
    q_range = [(ii+0.5)*dq for ii in range(qbins)]
 
-   #
-   # Read the DATA file and get the atom types
-   #
-   print( "Reading DATAFILE from:",dataFileName,"..")
+   print( "Parsing the atom types from the Lammps datafile:",file_data,"..")
 
-   fileLines = []
-   iLine = 0
+   lines = []
+   iline = 0
 
-   with open(dataFileName,"r") as openFileObject:
-      for curLine in openFileObject:
+   with open(file_data,"r") as openFileObject:
+      for cur_line in openFileObject:
 
-         if "atom types" in curLine:
-            nAtomTypes = int(curLine.split()[0])
-         if "atoms" in curLine:
-            nAtoms = int(curLine.split()[0])
-         if "Masses" in curLine:
-            typesLineStart = iLine + 2
-            typesLineEnd = typesLineStart + nAtomTypes
-         if "Atoms" in curLine:
-            atomLineStart = iLine + 2
-            atomLineEnd = atomLineStart + nAtoms
-   
-         fileLines.append(curLine)
-         iLine += 1
+         if "atom types" in cur_line:
+            n_atom_type = int(cur_line.split()[0])
+         if "atoms" in cur_line:
+            n_atom = int(cur_line.split()[0])
+         if "Masses" in cur_line:
+            line_start_type = iline + 2
+            line_end_type = line_start_type + n_atom_type
+         if "Atoms" in cur_line:
+            line_start_atom = iline + 2
+            line_end_atom = line_start_atom + n_atom
 
-   typesOfSpecies = {}
-   speciesOfType = {}
-   for curLine in range(typesLineStart,typesLineEnd):
-      curLineSplit = fileLines[curLine].split()
-      species = curLineSplit[3]
-      type = int(curLineSplit[0])
-   
-      if species in typesOfSpecies.keys():
-         typesOfSpecies[species].append(type)
+         lines.append(cur_line)
+         iline += 1
+
+   type_of_species = {}
+   species_of_type = {}
+   for cur_line in range(line_start_type,line_end_type):
+      cur_lineSplit = lines[cur_line].split()
+      species = cur_lineSplit[3]
+      type = int(cur_lineSplit[0])
+
+      if species in type_of_species.keys():
+         type_of_species[species].append(type)
       else:
-         typesOfSpecies[species] = [type]
+         type_of_species[species] = [type]
 
-      speciesOfType[type] = species
+      species_of_type[type] = species
 
-   for species in typesOfSpecies:
-      print( species, typesOfSpecies[species])
+   for species in type_of_species:
+      print( species, type_of_species[species])
 
-   IdsOfSpecies = {}
-   for species in typesOfSpecies:
-      IdsOfSpecies[species] = []
+   ids_of_species = {}
+   for species in type_of_species:
+      ids_of_species[species] = []
 
-   for curLine in range(atomLineStart,atomLineEnd):
-      curLineSplit = fileLines[curLine].split()
-      ID = int(curLineSplit[0])
-      type = int(curLineSplit[col_type])
-      species = speciesOfType[type]
-      IdsOfSpecies[species].append(ID)
+   for cur_line in range(line_start_atom,line_end_atom):
+      cur_lineSplit = lines[cur_line].split()
+      id = int(cur_lineSplit[0])
+      type = int(cur_lineSplit[col_type])
+      species = species_of_type[type]
+      ids_of_species[species].append(id)
 
    N = {}
    C = {}
    N["all"] = 0
    C["all"] = 1.0
-   for species in typesOfSpecies:
-      N[species] = len(IdsOfSpecies[species])
+   for species in type_of_species:
+      N[species] = len(ids_of_species[species])
       N["all"] += N[species]
 
-   for species in typesOfSpecies:
+   for species in type_of_species:
       C[species] = float(N[species]) / float(N["all"])
       print( "There are",N[species]," ",species,"atoms (",C[species],"%)")
 
@@ -120,21 +114,16 @@ if __name__ == "__main__":
 
    #Write the atom IDs for each species in a file
    print( "Printing the atom IDs for each species..")
-   for species in typesOfSpecies:
+   for species in type_of_species:
       f = open('o.IDS.'+species+'.dat', 'w')
       f.write(species+"\n")
-      for ID in IdsOfSpecies[species]:
-         f.write(str(ID)+" ")
+      for id in ids_of_species[species]:
+         f.write(str(id)+" ")
    f.close()
 
-   # Track the computed RDFs so that we wont have to recompute them again
+   print( "Reading the partial gr from file",file_rdf,"..")
    gab_all = {}
-
-   #
-   # The section reads the RDFs made from previous calculations
-   #
-   print( "Reading the partial gr from file",RDFFileName,"..")
-   f = open(RDFFileName,"r")
+   f = open(file_rdf,"r")
    f.readline()
    rho = float(f.readline().split()[2])
    print( rho)
@@ -142,15 +131,14 @@ if __name__ == "__main__":
    types.pop(0)
    for type in types:
       gab_all[type] = [0] * rbins
-
    f.readline() # CA
    f.readline() # CB
    for ir in range(rbins):
-      currentLine = f.readline().split()
-      currentLine.pop(0)
+      current_line = f.readline().split()
+      current_line.pop(0)
       for it in range(len(types)):
          type = types[it]
-         gab_all[type][ir] = float(currentLine[it])
+         gab_all[type][ir] = float(current_line[it])
 
    #
    # This section deals with the atomic form factors
@@ -158,28 +146,28 @@ if __name__ == "__main__":
    # The structure factors were retrieved from :
    # http://lampx.tugraz.at/~hadley/ss1/crystaldiffraction/atomicformfactors/formfactors.php
 
-   fileName = "FORM_FACTORS.dat"
+   file_FF = "FORM_FACTORS.dat"
 
-   print( "Reading the atomic form factors from",fileName,"..\n")
+   print( "Reading the atomic form factors from",file_FF,"..\n")
 
    FFp = {}
-   for species in typesOfSpecies:
+   for species in type_of_species:
       FFp[species] = {"a" : [0.0]*4, "b" : [0.0]*4, "c" : 0.0}
 
-   with open(fileName,"r") as openFileObject:
-      for curLine in openFileObject:
-         curLine = curLine.split()
-         for species in typesOfSpecies:
-            if species == curLine[0]:
-               FFp[species]["a"][0] = float(curLine[1])
-               FFp[species]["a"][1] = float(curLine[3])
-               FFp[species]["a"][2] = float(curLine[5])
-               FFp[species]["a"][3] = float(curLine[7])
-               FFp[species]["b"][0] = float(curLine[2])
-               FFp[species]["b"][1] = float(curLine[4])
-               FFp[species]["b"][2] = float(curLine[6])
-               FFp[species]["b"][3] = float(curLine[8])
-               FFp[species]["c"]    = float(curLine[9])
+   with open(file_FF,"r") as openFileObject:
+      for cur_line in openFileObject:
+         cur_line = cur_line.split()
+         for species in type_of_species:
+            if species == cur_line[0]:
+               FFp[species]["a"][0] = float(cur_line[1])
+               FFp[species]["a"][1] = float(cur_line[3])
+               FFp[species]["a"][2] = float(cur_line[5])
+               FFp[species]["a"][3] = float(cur_line[7])
+               FFp[species]["b"][0] = float(cur_line[2])
+               FFp[species]["b"][1] = float(cur_line[4])
+               FFp[species]["b"][2] = float(cur_line[6])
+               FFp[species]["b"][3] = float(cur_line[8])
+               FFp[species]["c"]    = float(cur_line[9])
 
    print( "Atomic Form Factors")
 
@@ -193,8 +181,8 @@ if __name__ == "__main__":
    print( "Computation of the Faber-Ziman structure factor..\n")
 
    SFZ_all = {}
-   for species_A in typesOfSpecies:
-      for species_B in typesOfSpecies:
+   for species_A in type_of_species:
+      for species_B in type_of_species:
 
          SFZ = [0.0] * qbins
          #print( "SFZ computation of",species_A,"->",species_B,"..")
@@ -243,14 +231,14 @@ if __name__ == "__main__":
       qq = q_range[iq]
 
       denominator = 0.0
-      for species_A in typesOfSpecies:
+      for species_A in type_of_species:
          FA = FormFact(FFp[species_A],qq)
          denominator += C[species_A] * FA
       denominator = pow(denominator,2)
 
       numerator = 0.0
-      for species_A in typesOfSpecies:
-         for species_B in typesOfSpecies:
+      for species_A in type_of_species:
+         for species_B in type_of_species:
             type = species_A+"_"+species_B
             FA = FormFact(FFp[species_A],qq)
             FB = FormFact(FFp[species_B],qq)
@@ -267,13 +255,13 @@ if __name__ == "__main__":
       qq = q_range[iq]
 
       denominator = 0.0
-      for species_A in typesOfSpecies:
+      for species_A in type_of_species:
          FA = FormFact(FFp[species_A],qq)
          denominator += C[species_A] * FA
       denominator = pow(denominator,2)
 
       sum_c_fsq = 0.0
-      for species_A in typesOfSpecies:
+      for species_A in type_of_species:
          FA = FormFact(FFp[species_A],qq)
          sum_c_fsq += C[species_A] * FA * FA
 
@@ -296,8 +284,8 @@ if __name__ == "__main__":
 
       term_B = 0.0
 
-      for species_A in typesOfSpecies:
-         for species_B in typesOfSpecies:
+      for species_A in type_of_species:
+         for species_B in type_of_species:
 
             r_integral = 0.0
             gab = gab_all[species_A+"_"+species_B]
@@ -313,7 +301,7 @@ if __name__ == "__main__":
             term_B += sum
 
       term_A = 0.0
-      for species_A in typesOfSpecies:
+      for species_A in type_of_species:
          FA = FormFact(FFp[species_A],qq)
          term_A += C[species_A] * FA * FA
 
