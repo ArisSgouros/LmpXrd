@@ -7,7 +7,7 @@ import math as math
 kTol = 1e-6
 n_command_line_var = len(sys.argv)
 
-if n_command_line_var != 9 and n_command_line_var != 10:
+if n_command_line_var != 9 and n_command_line_var != 10 and n_command_line_var != 11:
    print()
    print( "The required formats are the following:")
    print()
@@ -57,15 +57,24 @@ print( "dq             :",dq)
 print( "NFrames        :",nFrame)
 print( "NEvery         :",nEvery)
 
+
+
+col_type = 2 # full = 2; atomic = 1
+print(n_command_line_var)
+if n_command_line_var >= 10:
+   col_type = int(sys.argv[9])
+   print(  "col_type   : ", col_type)
+
 computeRDFs = False
 readRDFs = False
-if n_command_line_var == 10:
-   RDFFileName = sys.argv[9]
+if n_command_line_var == 11:
+   RDFFileName = sys.argv[10]
    readRDFs = True
    print( "\nThe partial gr will be read from:",RDFFileName)
 else:
    computeRDFs = True
    print( "\nThe partial gr will be computed from scratch")
+
 
 #
 # Initialize the histograms
@@ -127,7 +136,7 @@ for species in typesOfSpecies:
 for curLine in range(atomLineStart,atomLineEnd):
    curLineSplit = fileLines[curLine].split()
    ID = int(curLineSplit[0])
-   type = int(curLineSplit[2])
+   type = int(curLineSplit[col_type])
    species = speciesOfType[type]
    IdsOfSpecies[species].append(ID)
 
