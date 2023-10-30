@@ -5,6 +5,42 @@ import numpy as np
 import math as math
 
 kTol = 1e-6
+
+def GetDumpFormat(filename):
+   col_id = col_xx = col_yy = col_zz = -1
+   f = open(confFileName,"r")
+   line = ""
+   for ii in range(9):
+      line = f.readline()
+   f.close()
+   header = line.split()
+   header = header[2:] # pop first two elements ('ITEM:', 'ATOMS')
+   for icol in range(len(header)):
+      attrib = header[icol]
+      if attrib == 'id':
+         col_id = icol
+      if attrib in ['x', 'xu', 'xs']:
+         col_xx = icol
+      if attrib in ['y', 'yu', 'ys']:
+         col_yy = icol
+      if attrib in ['z', 'zu', 'zs']:
+         col_zz = icol
+   if -1 in [col_id, col_xx, col_yy, col_zz]:
+      print("error with column ids in dump file")
+      print("header: ", line)
+      print("Id    : ", col_id)
+      print("x     : ", col_xx)
+      print("y     : ", col_yy)
+      print("z     : ", col_zz)
+      sys.exit()
+   return col_id, col_xx, col_yy, col_zz
+
+def FormFact(p, qq):
+   fa = p["c"]
+   for ii in range(4):
+      fa += p["a"][ii] * np.exp(-p["b"][ii]*pow(qq/(4*np.pi),2))
+   return fa
+
 n_command_line_var = len(sys.argv)
 
 if n_command_line_var != 9 and n_command_line_var != 10 and n_command_line_var != 11:
@@ -169,35 +205,6 @@ gab_all = {}
 #
 # The section computes the RDFs from the trajectory files
 #
-
-def GetDumpFormat(filename):
-   col_id = col_xx = col_yy = col_zz = -1
-   f = open(confFileName,"r")
-   line = ""
-   for ii in range(9):
-      line = f.readline()
-   f.close()
-   header = line.split()
-   header = header[2:] # pop first two elements ('ITEM:', 'ATOMS')
-   for icol in range(len(header)):
-      attrib = header[icol]
-      if attrib == 'id':
-         col_id = icol
-      if attrib in ['x', 'xu', 'xs']:
-         col_xx = icol
-      if attrib in ['y', 'yu', 'ys']:
-         col_yy = icol
-      if attrib in ['z', 'zu', 'zs']:
-         col_zz = icol
-   if -1 in [col_id, col_xx, col_yy, col_zz]:
-      print("error with column ids in dump file")
-      print("header: ", line)
-      print("Id    : ", col_id)
-      print("x     : ", col_xx)
-      print("y     : ", col_yy)
-      print("z     : ", col_zz)
-      sys.exit()
-   return col_id, col_xx, col_yy, col_zz
 
 # Check the format of the dump file
 col_id, col_xx, col_yy, col_zz = GetDumpFormat(confFileName)
@@ -411,12 +418,6 @@ for species in FFp:
    print( "b", FFp[species]["b"])
    print( "c", FFp[species]["c"])
 print()
-
-def FormFact(p, qq):
-   fa = p["c"]
-   for ii in range(4):
-      fa += p["a"][ii] * np.exp(-p["b"][ii]*pow(qq/(4*np.pi),2))
-   return fa
 
 print( "Computation of the Faber-Ziman structure factor..\n")
 
