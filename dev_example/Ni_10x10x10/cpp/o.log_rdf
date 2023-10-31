@@ -1,0 +1,37 @@
+
+Parameters of the computation:
+*r_max: 17.6
+*r_bin: 0.1
+*the lammps dump file is processed every 1 frames
+*gij based in ALL interactions
+
+Reading the lammps datafile with name ../gen//o.ni.dat..
+
+number of atoms: 4000
+number of types: 1
+
+Species assigned to each lammps atom type:
+0 Ni
+
+..assigning num 0 to species Ni
+
+..writting IDs of species Ni to file o.IDS.Ni.dat
+
+Reading the pairs of species from file: gij_pairs.dat
+number of pairs: 1
+
+list of pairs to be examined
+0 0 ( Ni Ni )
+
+find the number of interactions..
+0 0 = 0
+
+Computation of gij from lammps dumpfile: ../gen//o.ni.lammpstrj
+
+Number of samples examined: 1
+Ensemble averaged System volume: 43614.2
+
+writting gij of pair 0 0 ( Ni Ni )
+
+Writting all gij's in file: o.rdf.dat
+Done!

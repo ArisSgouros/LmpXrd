@@ -1,0 +1,31 @@
+*Parameters of the calculation*
+
+file_data   : ../gen//o.ni.dat
+file_rdf    : o.rdf.dat
+rmax           : 17.6
+dr             : 0.1
+qmax           : 20.0
+dq             : 0.05
+Parsing the atom types from the Lammps datafile: ../gen//o.ni.dat ..
+Ni [1]
+There are 4000   Ni atoms ( 1.0 %)
+There are 4000 atoms in total..
+Printing the atom IDs for each species..
+Reading the partial gr from file o.rdf.dat ..
+0.09171
+Reading the atomic form factors from ../form_factors.dat ..
+
+Atomic Form Factors
+species : Ni
+a [12.8376, 7.292, 4.4438, 2.38]
+b [3.8785, 0.2565, 12.1763, 66.3421]
+c 1.0341
+
+Computation of the Faber-Ziman structure factor..
+
+Computation of the X-ray weighted structure factor..
+
+Computation of the coherent scattering intensity..
+
+Done!
+Done!
