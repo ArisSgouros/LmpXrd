@@ -419,9 +419,11 @@ int main(int argc, char** argv){
          float nid = shell_vol * rho;
          float NA = (float)ids_of_species[species_A].size();
          float NB = (float)ids_of_species[species_B].size();
-         partial_gij[species_A][species_B][ibin] = (float)partial_hist_ij[species_A][species_B][ibin] / ((float)n_samples) * (float)n_atoms / ( NA * N_inter[species_A][species_B] * nid);
+         //partial_gij[species_A][species_B][ibin] = (float)partial_hist_ij[species_A][species_B][ibin] / ((float)n_samples) * (float)n_atoms / ( NA * N_inter[species_A][species_B] * nid);
+         partial_gij[species_A][species_B][ibin] = (float)partial_hist_ij[species_A][species_B][ibin] / ((float)n_samples) * (float)n_atoms / (NA * NB * nid);
+         // fixit: since there are no selfinteraction in bulk, shouldn't we scale as follows?
          //if (species_A == species_B) partial_gij[species_A][species_B][ibin] *= (float)NB / ((float)NB - 1.0);
-         fprintf (pFile, "%10d %10.6f %10.6f %10.6f\n",ibin, r_bin*((float)ibin+0.5), partial_gij[species_A][species_B][ibin], shell_vol);
+         fprintf (pFile, "%10d %10.6f %10.6f\n",ibin, r_bin*((float)ibin+0.5), partial_gij[species_A][species_B][ibin]);
       }
       fclose(pFile);
    }
