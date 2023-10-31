@@ -23,11 +23,11 @@ Species assigned to each lammps atom type:
 ..assigning num 3 to species SS
 ..assigning num 4 to species W
 
-..writting IDs of species SB to file o.IDs.SB.dat
-..writting IDs of species SO to file o.IDs.SO.dat
-..writting IDs of species SN to file o.IDs.SN.dat
-..writting IDs of species SS to file o.IDs.SS.dat
-..writting IDs of species W to file o.IDs.W.dat
+..writting IDs of species SB to file o.IDS.SB.dat
+..writting IDs of species SO to file o.IDS.SO.dat
+..writting IDs of species SN to file o.IDS.SN.dat
+..writting IDs of species SS to file o.IDS.SS.dat
+..writting IDs of species W to file o.IDS.W.dat
 
 Reading the pairs of species from file: gij_pairs.dat
 number of pairs: 24
@@ -114,5 +114,5 @@ writting gij of pair 2 3 ( SN SS )
 writting gij of pair 3 2 ( SS SN )
 writting gij of pair 3 3 ( SS SS )
 
-Writting all gij's in file: o.AllRDFs.dat
+Writting all gij's in file: o.rdf_full.dat
 Done!

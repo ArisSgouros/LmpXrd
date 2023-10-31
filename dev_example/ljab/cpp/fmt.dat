@@ -1,0 +1,9 @@
+# dump file columns
+1  # id
+3  # x
+4  # y
+5  # z
+# data file columns
+1  # id
+-1 # mol
+2  # type

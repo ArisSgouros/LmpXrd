@@ -1,0 +1,46 @@
+ID 1  # id
+X 3  # x
+Y 4  # y
+Z 5  # z
+# data file columns
+1  # id
+-1 # mol
+2  # type
+
+Parameters of the computation:
+*r_max: 6.5
+*r_bin: 0.065
+*the lammps dump file is processed every 1 frames
+*gij based in ALL interactions
+
+Reading the lammps datafile with name ../gen//pos_formatted.dat..
+
+number of atoms: 2000
+number of types: 2
+
+Species assigned to each lammps atom type:
+0 C
+1 C
+
+..assigning num 0 to species C
+
+..writting IDs of species C to file o.IDS.C.dat
+
+Reading the pairs of species from file: gij_pairs.dat
+number of pairs: 1
+
+list of pairs to be examined
+0 0 ( C C )
+
+find the number of interactions..
+0 0 = 0
+
+Computation of gij from lammps dumpfile: ../gen//movie.lammpstrj
+
+Number of samples examined: 10
+Ensemble averaged System volume: 2197
+
+writting gij of pair 0 0 ( C C )
+
+Writting all gij's in file: o.rdf.dat
+Done!

@@ -1,0 +1,31 @@
+*Parameters of the calculation*
+
+file_data   : ../gen//pos_formatted.dat
+file_rdf    : o.rdf.dat
+rmax           : 6.5
+dr             : 0.065
+qmax           : 20.0
+dq             : 0.05
+Parsing the atom types from the Lammps datafile: ../gen//pos_formatted.dat ..
+C [1, 2]
+There are 2000   C atoms ( 1.0 %)
+There are 2000 atoms in total..
+Printing the atom IDs for each species..
+Reading the partial gr from file o.rdf.dat ..
+0.91033
+Reading the atomic form factors from ../form_factors.dat ..
+
+Atomic Form Factors
+species : C
+a [2.31, 1.02, 1.5886, 0.865]
+b [20.8439, 10.2075, 0.5687, 51.6512]
+c 0.2156
+
+Computation of the Faber-Ziman structure factor..
+
+Computation of the X-ray weighted structure factor..
+
+Computation of the coherent scattering intensity..
+
+Done!
+Done!
