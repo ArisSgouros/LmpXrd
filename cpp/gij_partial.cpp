@@ -15,14 +15,6 @@
 #endif
 #include <vector>
 
-int DATA_COL_ID   = 0;
-int DATA_COL_MOL  = 1;
-int DATA_COL_TYPE = 2;
-int DUMP_COL_ID   = 0;
-int DUMP_COL_RX   = 3;
-int DUMP_COL_RY   = 4;
-int DUMP_COL_RZ   = 5;
-
 using namespace std;
 
 std::vector<std::string> tokenize(std::string input_string) {
@@ -46,15 +38,15 @@ struct s_atom{
 int main(int argc, char** argv){
 
    // Parse the command line arguments
-   if (argc < 7){
+   if (argc < 8){
       cout<<endl;;
       cout<<"The required formats are the following:"<<endl;
       cout<<endl;
-      cout<<"./gij_partial \"r_max\" \"dr\" \"n_every\" \"interactions\" \"datafile\" \"dumpfile\" \"pairfile\" \"rdffile\""<<endl;
+      cout<<"./gij_partial \"r_max\" \"dr\" \"n_every\" \"interactions\" \"datafile\" \"dumpfile\" \"pairfile\" \"formatfile\"  \"rdffile\""<<endl;
       cout<<endl;
       cout<<"with INTERACTIONS being set to either \"INTER\", \"INTRA\" or \"ALL\""<<endl;
       cout<<endl;
-      cout<<"example: ./gij_partial 15 0.5 1 INTER CG.dat CG.lammpstrj gij_pairs.dat o.rdf"<<endl;
+      cout<<"example: ./gij_partial 15 0.5 1 INTER CG.dat CG.lammpstrj gij_pairs.dat fmt.dat o.rdf"<<endl;
       cout<<endl;
       cout<<"*The format of the Masses section of the data file should be like the following:"<<endl;
       cout<<endl;
@@ -74,14 +66,7 @@ int main(int argc, char** argv){
       cout<<" O O"<<endl;
       cout<<" .."<<endl;
       cout<<endl;
-      cout<<"*The format of the atom section of the data file should be like the following:"<<endl;
-      cout<<" atomId molId type charge x y z"<<endl;
-      cout<<endl;
-      cout<<"*The formal of the dump lammps file is currently set to:"<<endl;
-      cout<<" id -> column "<<DUMP_COL_ID<<endl;
-      cout<<" x -> column "<<DUMP_COL_RX<<endl;
-      cout<<" y -> column "<<DUMP_COL_RY<<endl;
-      cout<<" z -> column "<<DUMP_COL_RZ<<endl;
+      cout<<"*The columns of the data and dump files are specified in the formatfile";
       cout<<endl;
       cout<<"exiting.."<<endl;
       return 0;
@@ -94,7 +79,42 @@ int main(int argc, char** argv){
    std::string datafile  = argv[5];
    std::string dumpfile  = argv[6];
    std::string pairfile = argv[7];
-   std::string rdffile  = argv[8];
+   std::string fmtfile  = argv[8];
+   std::string rdffile  = argv[9];
+
+
+   int DUMP_COL_ID   = -1;
+   int DUMP_COL_RX   = -1;
+   int DUMP_COL_RY   = -1;
+   int DUMP_COL_RZ   = -1;
+   int DATA_COL_ID   = -1;
+   int DATA_COL_MOL  = -1;
+   int DATA_COL_TYPE = -1;
+
+   // parse the format (column ordering) from the fmtfile
+   ifstream fmt_file(fmtfile.c_str(), ifstream::in);
+   {
+      {
+         std::string current_line;
+         getline(fmt_file, current_line); // header of dump file section
+         getline(fmt_file, current_line); // id
+         DUMP_COL_ID   = stoi(tokenize(current_line)[0])-1;
+         getline(fmt_file, current_line); // x
+         DUMP_COL_RX   = stoi(tokenize(current_line)[0])-1;
+         getline(fmt_file, current_line); // y
+         DUMP_COL_RY   = stoi(tokenize(current_line)[0])-1;
+         getline(fmt_file, current_line); // z
+         DUMP_COL_RZ   = stoi(tokenize(current_line)[0])-1;
+         getline(fmt_file, current_line); // header of data file section
+         getline(fmt_file, current_line); // id
+         DATA_COL_ID   = stoi(tokenize(current_line)[0])-1;
+         getline(fmt_file, current_line); // mol
+         DATA_COL_MOL  = stoi(tokenize(current_line)[0])-1;
+         getline(fmt_file, current_line); // type
+         DATA_COL_TYPE = stoi(tokenize(current_line)[0])-1;
+      }
+   }
+   fmt_file.close();
 
 
    cout<<endl;
@@ -200,7 +220,11 @@ int main(int argc, char** argv){
       tokens = tokenize(lines_of_file[iline]);
       s_atom atom;
       atom.id   = stoi(tokens[DATA_COL_ID])-1;;
-      atom.mol  = stoi(tokens[DATA_COL_MOL])-1;
+      if (DATA_COL_MOL >= 0) {
+         atom.mol  = stoi(tokens[DATA_COL_MOL])-1;
+      } else {
+         atom.mol = -1;
+      }
       atom.type = stoi(tokens[DATA_COL_TYPE])-1;
       atoms.push_back(atom);
       int snum = num_of_species[species_of_type[atom.type]];
