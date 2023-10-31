@@ -46,15 +46,15 @@ struct s_atom{
 int main(int argc, char** argv){
 
    // Parse the command line arguments
-   if (argc != 7 && argc !=8 ){
+   if (argc < 7){
       cout<<endl;;
       cout<<"The required formats are the following:"<<endl;
       cout<<endl;
-      cout<<"./gij_partial \"r_max\" \"dr\" \"n_every\" \"interactions\" \"datafile\" \"dumpfile\" \"pairfile\""<<endl;
+      cout<<"./gij_partial \"r_max\" \"dr\" \"n_every\" \"interactions\" \"datafile\" \"dumpfile\" \"pairfile\" \"rdffile\""<<endl;
       cout<<endl;
       cout<<"with INTERACTIONS being set to either \"INTER\", \"INTRA\" or \"ALL\""<<endl;
       cout<<endl;
-      cout<<"example: ./gij_partial 15 0.5 1 INTER CG.dat CG.lammpstrj gij_pairs.dat"<<endl;
+      cout<<"example: ./gij_partial 15 0.5 1 INTER CG.dat CG.lammpstrj gij_pairs.dat o.rdf"<<endl;
       cout<<endl;
       cout<<"*The format of the Masses section of the data file should be like the following:"<<endl;
       cout<<endl;
@@ -94,6 +94,7 @@ int main(int argc, char** argv){
    std::string datafile  = argv[5];
    std::string dumpfile  = argv[6];
    std::string pairfile = argv[7];
+   std::string rdffile  = argv[8];
 
 
    cout<<endl;
@@ -410,7 +411,7 @@ int main(int argc, char** argv){
       int species_A = it_pair->first;
       int species_B = it_pair->second;
       string gij_file_name;
-      gij_file_name += "o."+species_of_num[species_A]+"-"+species_of_num[species_B]+".dat";
+      gij_file_name = rdffile + "."+species_of_num[species_A]+"-"+species_of_num[species_B]+".dat";
       FILE * pFile;
       pFile = fopen (gij_file_name.c_str(),"w");
       cout<<"writting gij of pair "<<species_A<<" "<<species_B<<" ( "<<species_of_num[species_A]<<" "<<species_of_num[species_B]<<" )"<<endl;
@@ -430,7 +431,7 @@ int main(int argc, char** argv){
 
    // Output the gij's of the species in a single file
    FILE * pFile;
-   string file_all_gijs = "o.AllRDFs.dat";
+   string file_all_gijs = rdffile + ".dat";
    cout<<"\nWritting all gij's in file: "<<file_all_gijs<<endl;
 
    pFile = fopen (file_all_gijs.c_str(),"w");
