@@ -1,0 +1,118 @@
+
+Parameters of the computation:
+*r_max: 15
+*r_bin: 0.5
+*the lammps dump file is processed every 1 frames
+*gij based in INTRAMOLECLAR interactions
+
+Reading the lammps datafile with name ../CG.dat..
+
+number of atoms: 816
+number of types: 5
+
+Species assigned to each lammps atom type:
+0 SB
+1 SO
+2 SN
+3 SS
+5 W
+
+..assigning num 0 to species SB
+..assigning num 1 to species SO
+..assigning num 2 to species SN
+..assigning num 3 to species SS
+..assigning num 4 to species W
+
+..writting IDs of species SB to file o.IDs.SB.dat
+..writting IDs of species SO to file o.IDs.SO.dat
+..writting IDs of species SN to file o.IDs.SN.dat
+..writting IDs of species SS to file o.IDs.SS.dat
+..writting IDs of species W to file o.IDs.W.dat
+
+Reading the pairs of species from file: gij_pairs.dat
+number of pairs: 24
+
+list of pairs to be examined
+4 0 ( W SB )
+0 4 ( SB W )
+4 1 ( W SO )
+1 4 ( SO W )
+4 2 ( W SN )
+2 4 ( SN W )
+4 3 ( W SS )
+3 4 ( SS W )
+0 0 ( SB SB )
+0 1 ( SB SO )
+1 0 ( SO SB )
+0 2 ( SB SN )
+2 0 ( SN SB )
+0 3 ( SB SS )
+3 0 ( SS SB )
+1 1 ( SO SO )
+1 2 ( SO SN )
+2 1 ( SN SO )
+1 3 ( SO SS )
+3 1 ( SS SO )
+2 2 ( SN SN )
+2 3 ( SN SS )
+3 2 ( SS SN )
+3 3 ( SS SS )
+
+find the number of interactions..
+4 0 = 4
+0 4 = 800
+4 1 = 4
+1 4 = 800
+4 2 = 4
+2 4 = 800
+4 3 = 4
+3 4 = 800
+0 0 = 3
+0 1 = 3
+1 0 = 3
+0 2 = 3
+2 0 = 3
+0 3 = 3
+3 0 = 3
+1 1 = 3
+1 2 = 3
+2 1 = 3
+1 3 = 3
+3 1 = 3
+2 2 = 3
+2 3 = 3
+3 2 = 3
+3 3 = 3
+
+Computation of gij from lammps dumpfile: ../CG.lammpstrj
+
+Number of samples examined: 20
+Ensemble averaged System volume: 25773.2
+
+writting gij of pair 4 0 ( W SB )
+writting gij of pair 0 4 ( SB W )
+writting gij of pair 4 1 ( W SO )
+writting gij of pair 1 4 ( SO W )
+writting gij of pair 4 2 ( W SN )
+writting gij of pair 2 4 ( SN W )
+writting gij of pair 4 3 ( W SS )
+writting gij of pair 3 4 ( SS W )
+writting gij of pair 0 0 ( SB SB )
+writting gij of pair 0 1 ( SB SO )
+writting gij of pair 1 0 ( SO SB )
+writting gij of pair 0 2 ( SB SN )
+writting gij of pair 2 0 ( SN SB )
+writting gij of pair 0 3 ( SB SS )
+writting gij of pair 3 0 ( SS SB )
+writting gij of pair 1 1 ( SO SO )
+writting gij of pair 1 2 ( SO SN )
+writting gij of pair 2 1 ( SN SO )
+writting gij of pair 1 3 ( SO SS )
+writting gij of pair 3 1 ( SS SO )
+writting gij of pair 2 2 ( SN SN )
+writting gij of pair 2 3 ( SN SS )
+writting gij of pair 3 2 ( SS SN )
+writting gij of pair 3 3 ( SS SS )
+
+Writting all gij's in file: o.AllRDFs.dat
+Done!

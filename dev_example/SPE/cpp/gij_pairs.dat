@@ -1,0 +1,28 @@
+24           number of pairs
+
+Pairs
+
+W SB
+SB W
+W SO
+SO W
+W SN
+SN W
+W SS
+SS W
+SB SB
+SB SO
+SO SB
+SB SN
+SN SB
+SB SS
+SS SB
+SO SO
+SO SN
+SN SO
+SO SS
+SS SO
+SN SN
+SN SS
+SS SN
+SS SS
