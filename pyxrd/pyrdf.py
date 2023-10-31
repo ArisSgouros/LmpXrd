@@ -298,7 +298,7 @@ if __name__ == "__main__":
    g = open(file_rdf+'.dat', 'w')
    g.write("Nall = %-20s\n" % (str(N["all"])))
    rho = float(N["all"]) / volume
-   g.write("rho = %-.16f\n" % (rho))
+   g.write("rho = %-.5f\n" % (rho))
    g.write("%-20s" % ("type"))
    for key in gab_all:
       g.write("%-20s" % (key))
@@ -307,18 +307,18 @@ if __name__ == "__main__":
    g.write("%-20s" % ("ca"))
    for key in gab_all:
       species_a = key.split("_")[0]
-      g.write("%-20s" % (str(C[species_a])))
+      g.write("%-20.5f" % (C[species_a]))
    g.write("\n")
 
    g.write("%-20s" % ("cb"))
    for key in gab_all:
       species_b = key.split("_")[1]
-      g.write("%-20s" % (str(C[species_b])))
+      g.write("%-20.5f" % (C[species_b]))
    g.write("\n")
 
    for ir in range(rbins):
-      g.write("%-20.6f" %(r_range[ir]))
+      g.write("%-20.5f" %(r_range[ir]))
       for key in gab_all:
-         g.write("%-20.6f" % (gab_all[key][ir]))
+         g.write("%-20.5f" % (gab_all[key][ir]))
       g.write("\n")
    g.close()

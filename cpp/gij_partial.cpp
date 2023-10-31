@@ -436,7 +436,7 @@ int main(int argc, char** argv){
    pFile = fopen (file_all_gijs.c_str(),"w");
 
    fprintf (pFile, "Nall = %-20d\n", n_atoms);
-   fprintf (pFile, "rho = %-.16f\n", rho);
+   fprintf (pFile, "rho = %-.5f\n", rho);
    fprintf (pFile, "%-20s", "type");
    for (std::vector< std::pair <int, int> >::iterator it_pair = pairs.begin();it_pair != pairs.end(); it_pair++){
       std::string pair;
@@ -445,15 +445,15 @@ int main(int argc, char** argv){
    }
    fprintf (pFile, "%-20s ", "\nca");
    for (std::vector< std::pair <int, int> >::iterator it_pair = pairs.begin();it_pair != pairs.end(); it_pair++)
-      fprintf (pFile, "%-20.6f", c_of_species[it_pair->first]);
+      fprintf (pFile, "%-20.5f", c_of_species[it_pair->first]);
    fprintf (pFile, "%-20s ", "\ncb");
    for (std::vector< std::pair <int, int> >::iterator it_pair = pairs.begin();it_pair != pairs.end(); it_pair++)
-      fprintf (pFile, "%-20.6f", c_of_species[it_pair->second]);
+      fprintf (pFile, "%-20.5f", c_of_species[it_pair->second]);
    fprintf (pFile, "\n");
    for (int ibin = 0; ibin < n_bin; ibin++){
-      fprintf (pFile, "%-20.6f", r_bin*((float)ibin+0.5));
+      fprintf (pFile, "%-20.5f", r_bin*((float)ibin+0.5));
       for (std::vector< std::pair <int, int> >::iterator it_pair = pairs.begin();it_pair != pairs.end(); it_pair++)
-         fprintf (pFile, "%-20.6f", partial_gij[it_pair->first][it_pair->second][ibin]);
+         fprintf (pFile, "%-20.5f", partial_gij[it_pair->first][it_pair->second][ibin]);
       fprintf (pFile, "\n");
    }
    fclose(pFile);
