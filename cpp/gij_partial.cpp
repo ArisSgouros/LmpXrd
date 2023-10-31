@@ -210,7 +210,7 @@ int main(int argc, char** argv){
    // Write the Ids of each species to files
    for (int ii=0; ii < n_species; ii++){
       string id_file_name;
-      id_file_name += "o.IDs."+species_of_num[ii]+".dat";
+      id_file_name += "o.IDS."+species_of_num[ii]+".dat";
       ofstream idfile;
       idfile.open (id_file_name.c_str());
       cout<<"..writting IDs of species "<<species_of_num[ii]<<" to file " <<id_file_name<<endl;
