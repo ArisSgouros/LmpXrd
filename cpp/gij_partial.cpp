@@ -1,7 +1,3 @@
-
-/// Perform a parallel simulation?
-#define MPI_RUN
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -10,10 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cmath>
-#ifdef MPI_RUN
-#include <mpi.h>
-#endif
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -26,7 +20,7 @@ std::vector<std::string> tokenize(std::string input_string) {
    return tokens;
 }
 
-struct s_atom{
+struct Atom{
   int id;
   int mol;
   int type;
@@ -66,46 +60,45 @@ int main(int argc, char** argv){
       cout<<" O O"<<endl;
       cout<<" .."<<endl;
       cout<<endl;
-      cout<<"*The columns of the data and dump files are specified in the formatfile";
-      cout<<endl;
       cout<<"exiting.."<<endl;
       return 0;
    }
 
-   float r_max = atof(argv[1]);
-   float r_bin = atof(argv[2]);
-   int n_every = atoi(argv[3]);
-   std::string inter_type  = argv[4];
-   std::string datafile  = argv[5];
-   std::string dumpfile  = argv[6];
-   std::string pairfile = argv[7];
-   std::string atomfmt  = argv[8];
-   std::string rdffile  = argv[9];
+   float r_max            = atof(argv[1]);
+   float r_bin            = atof(argv[2]);
+   int n_every            = atoi(argv[3]);
+   std::string inter_type = argv[4];
+   std::string datafile   = argv[5];
+   std::string dumpfile   = argv[6];
+   std::string pairfile   = argv[7];
+   std::string atom_style    = argv[8];
+   std::string rdffile    = argv[9];
 
-   int DATA_COL_ID   = -1;
-   int DATA_COL_MOL  = -1;
-   int DATA_COL_TYPE = -1;
-   int DUMP_COL_ID   = -1;
-   int DUMP_COL_RX   = -1;
-   int DUMP_COL_RY   = -1;
-   int DUMP_COL_RZ   = -1;
+   // Deal with file formatting
+   int data_col_id   = -1;
+   int data_col_mol  = -1;
+   int data_col_type = -1;
+   int dump_col_id   = -1;
+   int dump_col_rx   = -1;
+   int dump_col_ry   = -1;
+   int dump_col_rz   = -1;
 
-   // set the format of the data file
-   if (atomfmt == "full") {
-      DATA_COL_ID = 0;
-      DATA_COL_MOL = 1;
-      DATA_COL_TYPE = 2;
-   } else if (atomfmt == "atomic") {
-      DATA_COL_ID = 0;
-      DATA_COL_TYPE = 1;
+   // set the format of the data file based on the Lammps convention
+   if (atom_style == "full") {
+      data_col_id = 0;
+      data_col_mol = 1;
+      data_col_type = 2;
+   } else if (atom_style == "atomic") {
+      data_col_id = 0;
+      data_col_type = 1;
    } else {
-      std::cout<<"Error: unsupported atom format "<<atomfmt<<std::endl;
+      std::cout<<"Error: unsupported atom format "<<atom_style<<std::endl;
       return 1;
    }
 
    // parse the format from the header of the dump file
-   ifstream tmp_dfile(dumpfile.c_str(), ifstream::in);
    {
+      ifstream tmp_dfile(dumpfile.c_str(), ifstream::in);
       std::string current_line;
       for (int ii=0; ii<9; ii++) {
          getline(tmp_dfile, current_line); // header of dump file section
@@ -116,17 +109,17 @@ int main(int argc, char** argv){
       for (int icol=0; icol<tokens.size(); icol++) {
          std::string quantity = tokens[icol];
          if (quantity == "id") {
-            DUMP_COL_ID = icol;
+            dump_col_id = icol;
          } else if (quantity == "xu" || quantity == "x" || quantity == "xs") {
-            DUMP_COL_RX = icol;
+            dump_col_rx = icol;
          } else if (quantity == "yu" || quantity == "y" || quantity == "ys") {
-            DUMP_COL_RY = icol;
-         } else if (quantity == "zu" || quantity == "z" || quantity == "zs") {
-            DUMP_COL_RZ = icol;
+            dump_col_ry = icol;
+          } else if (quantity == "zu" || quantity == "z" || quantity == "zs") {
+            dump_col_rz = icol;
          }
       }
+      tmp_dfile.close();
    }
-   tmp_dfile.close();
 
    cout<<endl;
    cout<<"Parameters of the computation:"<<endl;
@@ -154,6 +147,7 @@ int main(int argc, char** argv){
 
    int n_atoms=0, n_types=0, iline = 0;
    int atoms_line_start = 0, masses_line_start = 0, atom_types_line = 0, pairs_line_start = 0;
+
    std::vector <std::string> lines_of_file;
    std::vector <std::string> tokens;
    lines_of_file.clear();
@@ -174,12 +168,11 @@ int main(int argc, char** argv){
          atoms_line_start = iline+2;
       if (current_line.find("Masses") != std::string::npos)
          masses_line_start = iline+2;
-
-      iline++;
+       iline++;
    }
    data_file.close();
 
-   // A dictionary that maps tha lammps atom types to specific species
+   // A dictionary that maps (int) Lammps atom types to (str) species labels
    std::map<int, std::string > species_of_type;
 
    // Read the masses section and assign species to types
@@ -224,19 +217,21 @@ int main(int argc, char** argv){
       ids_of_species.push_back(ids);
 
    // A vector array that contains all atom classes
-   std::vector< s_atom> atoms;
+   std::vector<Atom> atoms;
 
    // Read the atom section
+   //std::vector <std::string> lines_of_file;
+   //std::vector <std::string> tokens;
    for (int iline = atoms_line_start; iline < atoms_line_start + n_atoms; iline++){
       tokens = tokenize(lines_of_file[iline]);
-      s_atom atom;
-      atom.id   = stoi(tokens[DATA_COL_ID])-1;;
-      if (DATA_COL_MOL >= 0) {
-         atom.mol  = stoi(tokens[DATA_COL_MOL])-1;
+      Atom atom;
+      atom.id   = stoi(tokens[data_col_id])-1;;
+      if (data_col_mol >= 0) {
+         atom.mol  = stoi(tokens[data_col_mol])-1;
       } else {
          atom.mol = -1;
       }
-      atom.type = stoi(tokens[DATA_COL_TYPE])-1;
+      atom.type = stoi(tokens[data_col_type])-1;
       atoms.push_back(atom);
       int snum = num_of_species[species_of_type[atom.type]];
       ids_of_species[snum].push_back(atom.id);
@@ -297,7 +292,6 @@ int main(int argc, char** argv){
         it_pair != pairs.end(); it_pair++)
       cout<<it_pair->first<<" "<<it_pair->second<<" ( "<<species_of_num[it_pair->first]<<" "<<species_of_num[it_pair->second]<<" )"<<endl;
 
-
    // find the number and concentration of each species
    std::vector<float> c_of_species;
    std::vector<int> N_of_species;
@@ -327,7 +321,7 @@ int main(int argc, char** argv){
       cout<<species_A<<" "<<species_B<<" = "<<N_inter[species_A][species_B]<<endl;
    }
 
-   // Initialize some arrays
+   // Initialize the gij arrays
    int partial_hist_ij[n_species][n_species][n_bin];
    float partial_gij[n_species][n_species][n_bin];
    for (int i = 0; i < n_species; ++i)
@@ -338,101 +332,104 @@ int main(int argc, char** argv){
          }
 
    cout<<"\nComputation of gij from lammps dumpfile: "<<dumpfile<<endl;
-   ifstream dump_file(dumpfile.c_str(), ifstream::in);
-
    int iframe = 0;
    int n_samples = 0;
    float volume = 0.0;
-   for (int iframe = 0; ;iframe++){
-      // A temporary string for the current line of the file.
-      std::string current_line;
 
-      // Check if end of file
-      getline(dump_file, current_line); //ITEM: TIMESTEP
-      if (not dump_file.good())
-         break;
+   {
+      ifstream dump_file(dumpfile.c_str(), ifstream::in);
 
-      // Chech if this is a frame we need to process.
-      if (iframe % n_every != 0){
-         for (int ii=0; ii<n_atoms+8; ii++){
-            getline(dump_file,current_line);
+      for (int iframe = 0; ;iframe++){
+         // A temporary string for the current line of the file.
+         std::string current_line;
+
+         // Check if end of file
+         getline(dump_file, current_line); //ITEM: TIMESTEP
+         if (not dump_file.good())
+            break;
+
+         // Check if this is a frame we need to process.
+         if (iframe % n_every != 0){
+            for (int ii=0; ii<n_atoms+8; ii++){
+               getline(dump_file,current_line);
+            }
+            continue;
          }
-         continue;
-      }
-      else
-         n_samples += 1;
+         else
+            n_samples += 1;
 
-      float lx, ly, lz, xlo, ylo, zlo, xhi, yhi, zhi;
+         float lx, ly, lz, xlo, ylo, zlo, xhi, yhi, zhi;
 
-      getline(dump_file, current_line);
-      getline(dump_file, current_line); // ITEM: NUMBER OF ATOMS
-      getline(dump_file, current_line);
-      getline(dump_file, current_line); // ITEM: BOX BOUNDS pp pp pp
-      getline(dump_file, current_line);
-      tokens = tokenize(current_line);
-      xlo = stof(tokens[0]);
-      xhi = stof(tokens[1]);
-      getline(dump_file, current_line);
-      tokens = tokenize(current_line);
-      ylo = stof(tokens[0]);
-      yhi = stof(tokens[1]);
-      getline(dump_file, current_line);
-      tokens = tokenize(current_line);
-      zlo = stof(tokens[0]);
-      zhi = stof(tokens[1]);
-
-      lx = xhi - xlo;
-      ly = yhi - ylo;
-      lz = zhi - zlo;
-      float ilx = 1.0 / lx;
-      float ily = 1.0 / ly;
-      float ilz = 1.0 / lz;
-
-      volume += lx * ly * lz;
-
-      getline(dump_file, current_line); // ITEM: ATOMS id mol type xu yu zu
-
-      for (int ii = 0; ii < n_atoms; ii++){
+         getline(dump_file, current_line);
+         getline(dump_file, current_line); // ITEM: NUMBER OF ATOMS
+         getline(dump_file, current_line);
+         getline(dump_file, current_line); // ITEM: BOX BOUNDS pp pp pp
          getline(dump_file, current_line);
          tokens = tokenize(current_line);
-         int id = stoi(tokens[DUMP_COL_ID]) -1;
-         atoms[id].rx   = stof(tokens[DUMP_COL_RX]);
-         atoms[id].ry   = stof(tokens[DUMP_COL_RY]);
-         atoms[id].rz   = stof(tokens[DUMP_COL_RZ]);
-      }
-      for (std::vector< std::pair <int, int> >::iterator it_pair = pairs.begin();
-           it_pair != pairs.end(); it_pair++){
-         int species_A = it_pair->first;
-         int species_B = it_pair->second;
-         for (std::vector<int>::iterator itA = ids_of_species[species_A].begin(); itA != ids_of_species[species_A].end(); itA++){
-            int iatom = (*itA);
-            float irx = atoms[iatom].rx;
-            float iry = atoms[iatom].ry;
-            float irz = atoms[iatom].rz;
-            for (std::vector<int>::iterator itB = ids_of_species[species_B].begin(); itB != ids_of_species[species_B].end(); itB++){
-               int jatom = (*itB);
-               float jrx = atoms[jatom].rx;
-               float jry = atoms[jatom].ry;
-               float jrz = atoms[jatom].rz;
-               float dx = jrx - irx;
-               dx -= lx * round(dx * ilx);
-               float dy = jry - iry;
-               dy -= ly * round(dy * ily);
-               float dz = jrz - irz;
-               dz -= lz * round(dz * ilz);
-               float rr2 = dx * dx + dy * dy + dz * dz;
-               if (rr2 < r_max2){
-                  if (jatom == iatom) continue;
-                  if (interact_flag == 1 && atoms[iatom].mol == atoms[jatom].mol) continue;
-                  if (interact_flag == 2 && atoms[iatom].mol != atoms[jatom].mol) continue;
-                  int ibin = (int)(sqrt(rr2)*ir_bin);
-                  partial_hist_ij[ species_A ][ species_B ][ ibin ] += 1;
+         xlo = stof(tokens[0]);
+         xhi = stof(tokens[1]);
+         getline(dump_file, current_line);
+         tokens = tokenize(current_line);
+         ylo = stof(tokens[0]);
+         yhi = stof(tokens[1]);
+         getline(dump_file, current_line);
+         tokens = tokenize(current_line);
+         zlo = stof(tokens[0]);
+         zhi = stof(tokens[1]);
+
+         lx = xhi - xlo;
+         ly = yhi - ylo;
+         lz = zhi - zlo;
+         float ilx = 1.0 / lx;
+         float ily = 1.0 / ly;
+         float ilz = 1.0 / lz;
+
+         volume += lx * ly * lz;
+
+         getline(dump_file, current_line); // ITEM: ATOMS id mol type xu yu zu
+
+         for (int ii = 0; ii < n_atoms; ii++){
+            getline(dump_file, current_line);
+            tokens = tokenize(current_line);
+            int id = stoi(tokens[dump_col_id]) -1;
+            atoms[id].rx   = stof(tokens[dump_col_rx]);
+            atoms[id].ry   = stof(tokens[dump_col_ry]);
+            atoms[id].rz   = stof(tokens[dump_col_rz]);
+         }
+         for (std::vector< std::pair <int, int> >::iterator it_pair = pairs.begin();
+              it_pair != pairs.end(); it_pair++){
+            int species_A = it_pair->first;
+            int species_B = it_pair->second;
+            for (std::vector<int>::iterator itA = ids_of_species[species_A].begin(); itA != ids_of_species[species_A].end(); itA++){
+               int iatom = (*itA);
+               float irx = atoms[iatom].rx;
+               float iry = atoms[iatom].ry;
+               float irz = atoms[iatom].rz;
+               for (std::vector<int>::iterator itB = ids_of_species[species_B].begin(); itB != ids_of_species[species_B].end(); itB++){
+                  int jatom = (*itB);
+                  float jrx = atoms[jatom].rx;
+                  float jry = atoms[jatom].ry;
+                  float jrz = atoms[jatom].rz;
+                  float dx = jrx - irx;
+                  dx -= lx * round(dx * ilx);
+                  float dy = jry - iry;
+                  dy -= ly * round(dy * ily);
+                  float dz = jrz - irz;
+                  dz -= lz * round(dz * ilz);
+                  float rr2 = dx * dx + dy * dy + dz * dz;
+                  if (rr2 < r_max2){
+                     if (jatom == iatom) continue;
+                     if (interact_flag == 1 && atoms[iatom].mol == atoms[jatom].mol) continue;
+                     if (interact_flag == 2 && atoms[iatom].mol != atoms[jatom].mol) continue;
+                     int ibin = (int)(sqrt(rr2)*ir_bin);
+                     partial_hist_ij[ species_A ][ species_B ][ ibin ] += 1;
+                  }
                }
             }
          }
       }
+      dump_file.close();
    }
-   dump_file.close();
 
    volume /= (float)n_samples;
    float rho = (float)n_atoms / volume;
@@ -457,7 +454,7 @@ int main(int argc, char** argv){
          float NB = (float)ids_of_species[species_B].size();
          //partial_gij[species_A][species_B][ibin] = (float)partial_hist_ij[species_A][species_B][ibin] / ((float)n_samples) * (float)n_atoms / ( NA * N_inter[species_A][species_B] * nid);
          partial_gij[species_A][species_B][ibin] = (float)partial_hist_ij[species_A][species_B][ibin] / ((float)n_samples) * (float)n_atoms / (NA * NB * nid);
-         // fixit: since there are no selfinteraction in bulk, shouldn't we scale as follows?
+         // fixit: since there are no selfinteractions in bulk, shouldn't we scale as follows?
          //if (species_A == species_B) partial_gij[species_A][species_B][ibin] *= (float)NB / ((float)NB - 1.0);
          fprintf (pFile, "%10d %10.6f %10.6f\n",ibin, r_bin*((float)ibin+0.5), partial_gij[species_A][species_B][ibin]);
       }
