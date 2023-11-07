@@ -4,15 +4,27 @@ scheme     :  sum
 origin     :  [0. 0. 0.]
 qmax       :  20.0
 dq         :  0.1
+
 Reading the atomic form factors from form_factors.dat ..
 
-Atomic Form Factors
-element : H
-a [0.489918, 0.262003, 0.196767, 0.049879]
-b [20.6593, 7.74039, 49.5519, 2.20159]
-c 0.001305
-element : C
-a [2.31, 1.02, 1.5886, 0.865]
-b [20.8439, 10.2075, 0.5687, 51.6512]
-c 0.2156
+Atomic Form Factors:
+   element    a1         b1         a2         b2         a3         b3         a4         b4         c          
+   H          0.4899     20.6593    0.2620     7.7404     0.1968     49.5519    0.0499     2.2016     0.0013     
+   C          2.3100     20.8439    1.0200     10.2075    1.5886     0.5687     0.8650     51.6512    0.2156     
 
+
+Computing the group scattering factor..
+
+Fitting form factor coefficients to group scattering factor..
+Warning: Maximum number of function evaluations has been exceeded.
+Optimization terminated successfully.
+         Current function value: 0.000003
+         Iterations: 136
+         Function evaluations: 1480
+         Gradient evaluations: 148
+Fitting completed.
+   error:
+       3.411787154389119e-06
+   coeffs:
+      a1         b1         a2         b2         a3         b3         a4         b4         c          
+      1.0829     47.9400    1.5954     0.6186     2.0911     23.8322    1.9632     11.2299    0.2633     
