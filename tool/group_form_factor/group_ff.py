@@ -138,44 +138,55 @@ if __name__ == "__main__":
             ff_group += ff_atom
          ff_group_list.append(ff_group)
 
-   # export the group form factor
-   if not file_ff_group == "":
-      foo = open(file_ff_group, "w")
-      foo.write("%-16s %-16s " % ("q", "ff_group"))
-      for el in element_list:
-         foo.write("%-16s " % (el))
-      foo.write("\n")
-      for ii in range(nbin):
-         foo.write("%-16.9f %-16.9f " % (qq_list[ii], ff_group_list[ii]))
-         for el in element_list:
-            foo.write("%-16.9f " % (FormFact(form_fact_coeff_el[el], qq_list[ii])))
-         foo.write("\n")
-      foo.close()
-
    #
    # fit effective form factor coefficients for group
    #
    def ObjFunc(coeff_list, qq_list, ff_group_list):
       # unpack the coefficients
-      form_fact_coeff_group = FormFactCoeff()
-      form_fact_coeff_group.a = [coeff_list[0], coeff_list[2], coeff_list[4], coeff_list[6]]
-      form_fact_coeff_group.b = [coeff_list[1], coeff_list[3], coeff_list[5], coeff_list[7]]
-      form_fact_coeff_group.c = coeff_list[8]
+      ff_g = FormFactCoeff()
+      ff_g.a = [coeff_list[0], coeff_list[2], coeff_list[4], coeff_list[6]]
+      ff_g.b = [coeff_list[1], coeff_list[3], coeff_list[5], coeff_list[7]]
+      ff_g.c = coeff_list[8]
 
       merit = 0.0
       n_eval = len(qq_list)
       for ii in range(n_eval):
          qq = qq_list[ii]
-         ff_model = FormFact(form_fact_coeff_group, qq)
+         ff_model = FormFact(ff_g, qq)
          merit += pow(ff_model - ff_group_list[ii], 2)
       merit /= n_eval
-      print(merit)
+      #print(merit)
       return merit
 
    res = minimize(ObjFunc, init_guess, args=(qq_list, ff_group_list),  method='nelder-mead',options={'xtol': 1e-9, 'disp': True})
-   coeff_opt = res.x
-   res = minimize(ObjFunc, coeff_opt, args=(qq_list, ff_group_list),  method='BFGS',options={'xtol': 1e-15, 'disp': True})
-   coeff_opt = res.x
+   res = minimize(ObjFunc, res.x, args=(qq_list, ff_group_list),  method='BFGS',options={'disp': True})
 
-   print("Fit success = ", res.success)
-   print("coeffs      = ", res.x)
+   ff_g = FormFactCoeff()
+   ff_g.a = [res.x[0], res.x[2], res.x[4], res.x[6]]
+   ff_g.b = [res.x[1], res.x[3], res.x[5], res.x[7]]
+   ff_g.c = res.x[8]
+
+   print("Fitting completed.")
+   print("   error:")
+   print("      ", ObjFunc(res.x, qq_list, ff_group_list))
+   print("   coeffs:")
+   print("      %-16s %-16s %-16s %-16s %-16s %-16s %-16s %-16s %-16s" % ("a1","b1","a2","b2","a3","b3","a4","b4","c"))
+   print("      %-16.9f %-16.9f %-16.9f %-16.9f %-16.9f %-16.9f %-16.9f %-16.9f %-16.9f" % \
+                (ff_g.a[0], ff_g.b[0], ff_g.a[1], ff_g.b[1], ff_g.a[2], ff_g.b[2], ff_g.a[3], ff_g.b[3], ff_g.c))
+
+   # export the group form factor
+   if not file_ff_group == "":
+      foo = open(file_ff_group, "w")
+      foo.write("%-16s %-16s %-16s " % ("q", "ff_group_dir", "ff_group_fit"))
+      for el in element_list:
+         foo.write("%-16s " % (el))
+      foo.write("\n")
+      for ii in range(nbin):
+         qq = qq_list[ii]
+         ff_group_dir = ff_group_list[ii]
+         ff_group_fit = FormFact(ff_g, qq)
+         foo.write("%-16.9f %-16.9f %-16.9f " % (qq, ff_group_dir, ff_group_fit))
+         for el in element_list:
+            foo.write("%-16.9f " % (FormFact(form_fact_coeff_el[el], qq_list[ii])))
+         foo.write("\n")
+      foo.close()
