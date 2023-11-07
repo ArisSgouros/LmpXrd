@@ -21,10 +21,16 @@ def CartesianToSpherical(r_cart, r_orig):
       ph = np.arctan2(yy,xx)
       return np.array([rr, th, ph])
 
-def FormFact(p, qq):
-   fa = p["c"]
+class FormFactCoeff:
+   def __init__(self):
+      self.a = [0.0]*4
+      self.b = [0.0]*4
+      self.c = 0.0
+
+def FormFact(coeff, qq):
+   fa = coeff.c
    for ii in range(4):
-      fa += p["a"][ii] * np.exp(-p["b"][ii]*pow(qq/(4*np.pi),2))
+      fa += coeff.a[ii] * np.exp(-coeff.b[ii]*pow(qq/(4*np.pi),2))
    return fa
 
 if __name__ == "__main__":
@@ -74,32 +80,28 @@ if __name__ == "__main__":
    # http://lampx.tugraz.at/~hadley/ss1/crystaldiffraction/atomicformfactors/formfactors.php
    print( "Reading the atomic form factors from",file_ff_atom,"..\n")
 
-   FFp = {}
+   form_fact_coeff_el = {}
+
    for element in element_types:
-      FFp[element] = {"a" : [0.0]*4, "b" : [0.0]*4, "c" : 0.0}
+      form_fact_coeff_el[element] = FormFactCoeff()
 
    with open(file_ff_atom,"r") as openFileObject:
       for cur_line in openFileObject:
          cur_line = cur_line.split()
          for element in element_types:
             if element == cur_line[0]:
-               FFp[element]["a"][0] = float(cur_line[1])
-               FFp[element]["a"][1] = float(cur_line[3])
-               FFp[element]["a"][2] = float(cur_line[5])
-               FFp[element]["a"][3] = float(cur_line[7])
-               FFp[element]["b"][0] = float(cur_line[2])
-               FFp[element]["b"][1] = float(cur_line[4])
-               FFp[element]["b"][2] = float(cur_line[6])
-               FFp[element]["b"][3] = float(cur_line[8])
-               FFp[element]["c"]    = float(cur_line[9])
+               cur_line.pop(0)
+               coeff_list = [float(item) for item in cur_line]
+               form_fact_coeff_el[element].a = [coeff_list[0], coeff_list[2], coeff_list[4], coeff_list[6]]
+               form_fact_coeff_el[element].b = [coeff_list[1], coeff_list[3], coeff_list[5], coeff_list[7]]
+               form_fact_coeff_el[element].c = coeff_list[8]
 
    print( "Atomic Form Factors")
-
-   for element in FFp:
+   for element in form_fact_coeff_el:
       print( "element :", element)
-      print( "a", FFp[element]["a"])
-      print( "b", FFp[element]["b"])
-      print( "c", FFp[element]["c"])
+      print( "a", form_fact_coeff_el[element].a)
+      print( "b", form_fact_coeff_el[element].b)
+      print( "c", form_fact_coeff_el[element].c)
    print()
 
    rsph_list = []
@@ -117,7 +119,7 @@ if __name__ == "__main__":
          for ii in range(natom):
             el = element_list[ii]
             [rr, th, phi] = rsph_list[ii]
-            ff = FormFact(FFp[el], qq)
+            ff = FormFact(form_fact_coeff_el[el], qq)
             jn = spherical_jn(mm, qq*rr)
             a00 += ff*spherical_jn(mm, qq*rr)
             #print("   el: ", el, ", ff: ", ff, ", jn: ", jn, ", rr: ", rr)
@@ -127,7 +129,7 @@ if __name__ == "__main__":
          ff_group = 0.0
          for ii in range(natom):
             el = element_list[ii]
-            ff_atom = FormFact(FFp[el], qq)
+            ff_atom = FormFact(form_fact_coeff_el[el], qq)
             ff_group += ff_atom
          ff_group_list.append(ff_group)
 
@@ -141,6 +143,6 @@ if __name__ == "__main__":
       for ii in range(nbin):
          foo.write("%-16.9f %-16.9f " % (qq_list[ii], ff_group_list[ii]))
          for el in element_list:
-            foo.write("%-16.9f " % (FormFact(FFp[el], qq_list[ii])))
+            foo.write("%-16.9f " % (FormFact(form_fact_coeff_el[el], qq_list[ii])))
          foo.write("\n")
       foo.close()
