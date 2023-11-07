@@ -1,0 +1,18 @@
+group file :  group_c-h.xyz
+ff file    :  form_factors.dat
+scheme     :  sum
+origin     :  [0. 0. 0.]
+qmax       :  20.0
+dq         :  0.1
+Reading the atomic form factors from form_factors.dat ..
+
+Atomic Form Factors
+element : H
+a [0.489918, 0.262003, 0.196767, 0.049879]
+b [20.6593, 7.74039, 49.5519, 2.20159]
+c 0.001305
+element : C
+a [2.31, 1.02, 1.5886, 0.865]
+b [20.8439, 10.2075, 0.5687, 51.6512]
+c 0.2156
+
