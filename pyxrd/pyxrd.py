@@ -55,7 +55,6 @@ if __name__ == "__main__":
    # Initialize the binning
    rbins = int(rmax / dr)
    r_range = [(ii+0.5)*dr for ii in range(rbins)]
-   qmin = 1e-5
    qbins = int(qmax / dq)
    q_range = [(ii+0.5)*dq for ii in range(qbins)]
 
