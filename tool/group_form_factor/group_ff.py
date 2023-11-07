@@ -83,7 +83,8 @@ if __name__ == "__main__":
    #
    # The structure factors were retrieved from :
    # http://lampx.tugraz.at/~hadley/ss1/crystaldiffraction/atomicformfactors/formfactors.php
-   print( "Reading the atomic form factors from",file_ff_atom,"..\n")
+
+   print("\nReading the atomic form factors from",file_ff_atom,"..\n")
 
    form_fact_coeff_el = {}
 
@@ -101,18 +102,23 @@ if __name__ == "__main__":
                form_fact_coeff_el[element].b = [coeff_list[1], coeff_list[3], coeff_list[5], coeff_list[7]]
                form_fact_coeff_el[element].c = coeff_list[8]
 
-   print( "Atomic Form Factors")
+   print("Atomic Form Factors:")
+   fmt = "   %-10s " + 9*"%-10s "
+   print(fmt % ("element", "a1","b1","a2","b2","a3","b3","a4","b4","c"))
    for element in form_fact_coeff_el:
-      print( "element :", element)
-      print( "a", form_fact_coeff_el[element].a)
-      print( "b", form_fact_coeff_el[element].b)
-      print( "c", form_fact_coeff_el[element].c)
+      fmt = "   " + "%-10s " + 9*"%-10.4f "
+      print(fmt % (element, form_fact_coeff_el[element].a[0], form_fact_coeff_el[element].b[0], \
+                            form_fact_coeff_el[element].a[1], form_fact_coeff_el[element].b[1], \
+                            form_fact_coeff_el[element].a[2], form_fact_coeff_el[element].b[2], \
+                            form_fact_coeff_el[element].a[3], form_fact_coeff_el[element].b[3], \
+                            form_fact_coeff_el[element].c))
    print()
 
    rsph_list = []
    for rcart in rcart_list:
       rsph_list.append(CartesianToSpherical(rcart, r_orig))
 
+   print("\nComputing the group scattering factor..")
    # compute the molecular scattering factor for m=0, n=0 [eq. 2 in https://doi.org/10.1063/1.435096]
    ff_group_list = []
 
@@ -141,6 +147,7 @@ if __name__ == "__main__":
    #
    # fit effective form factor coefficients for group
    #
+   print("\nFitting form factor coefficients to group scattering factor..")
    def ObjFunc(coeff_list, qq_list, ff_group_list):
       # unpack the coefficients
       ff_g = FormFactCoeff()
@@ -170,23 +177,25 @@ if __name__ == "__main__":
    print("   error:")
    print("      ", ObjFunc(res.x, qq_list, ff_group_list))
    print("   coeffs:")
-   print("      %-16s %-16s %-16s %-16s %-16s %-16s %-16s %-16s %-16s" % ("a1","b1","a2","b2","a3","b3","a4","b4","c"))
-   print("      %-16.9f %-16.9f %-16.9f %-16.9f %-16.9f %-16.9f %-16.9f %-16.9f %-16.9f" % \
-                (ff_g.a[0], ff_g.b[0], ff_g.a[1], ff_g.b[1], ff_g.a[2], ff_g.b[2], ff_g.a[3], ff_g.b[3], ff_g.c))
+
+   fmt = "      " + "%-10s "*9
+   print(fmt % ("a1","b1","a2","b2","a3","b3","a4","b4","c"))
+   fmt = "      " + "%-10.4f "*9
+   print(fmt % (ff_g.a[0], ff_g.b[0], ff_g.a[1], ff_g.b[1], ff_g.a[2], ff_g.b[2], ff_g.a[3], ff_g.b[3], ff_g.c))
 
    # export the group form factor
    if not file_ff_group == "":
       foo = open(file_ff_group, "w")
-      foo.write("%-16s %-16s %-16s " % ("q", "ff_group_dir", "ff_group_fit"))
+      foo.write("%-10s %-10s %-10s " % ("q", "ff_group_dir", "ff_group_fit"))
       for el in element_list:
-         foo.write("%-16s " % (el))
+         foo.write("%-10s " % (el))
       foo.write("\n")
       for ii in range(nbin):
          qq = qq_list[ii]
          ff_group_dir = ff_group_list[ii]
          ff_group_fit = FormFact(ff_g, qq)
-         foo.write("%-16.9f %-16.9f %-16.9f " % (qq, ff_group_dir, ff_group_fit))
+         foo.write("%-10.4f %-10.4f %-10.4f " % (qq, ff_group_dir, ff_group_fit))
          for el in element_list:
-            foo.write("%-16.9f " % (FormFact(form_fact_coeff_el[el], qq_list[ii])))
+            foo.write("%-10.4f " % (FormFact(form_fact_coeff_el[el], qq_list[ii])))
          foo.write("\n")
       foo.close()
