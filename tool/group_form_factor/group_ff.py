@@ -1,6 +1,7 @@
 import numpy as np
 import argparse
 from scipy.special import spherical_jn
+from scipy.optimize import minimize
 
 parser = argparse.ArgumentParser(description='Calculate group scattering factors')
 parser.add_argument('group_file', type=str, help='Path of the xyz mol file')
@@ -9,7 +10,8 @@ parser.add_argument('qmax', type=float, help='qmax')
 parser.add_argument('dq', type=float, help='dq')
 parser.add_argument('-orig', '--orig', type=str, default="0,0,0", help='Origin coordinates.')
 parser.add_argument('-scheme', '--scheme', type=str, default="sum", help='Select the weighting scheme (sum/narten).')
-parser.add_argument('-ff_group_file', '--ff_group_file', type=str, default="", help='Path of the group form factor as a function of q')
+parser.add_argument('-ff_group_file', '--ff_group_file', type=str, default="", help='Path of the group form factor as a function of q.')
+parser.add_argument('-init_guess', '--init_guess', type=str, default="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0", help='Initial guess of group coeffs.')
 
 def CartesianToSpherical(r_cart, r_orig):
    xx, yy, zz = (r_cart - r_orig)
@@ -52,6 +54,9 @@ if __name__ == "__main__":
    print("origin     : ", r_orig)
    print("qmax       : ", qmax)
    print("dq         : ", dq)
+
+   #             a1   b1   a2   b2   a3   b3   a4   b4   c
+   init_guess = [float(item) for item in args.init_guess.split(',')]
 
    nbin = int(qmax / dq)
    qq_list = [(ii+0.5)*dq for ii in range(nbin)]
@@ -146,3 +151,31 @@ if __name__ == "__main__":
             foo.write("%-16.9f " % (FormFact(form_fact_coeff_el[el], qq_list[ii])))
          foo.write("\n")
       foo.close()
+
+   #
+   # fit effective form factor coefficients for group
+   #
+   def ObjFunc(coeff_list, qq_list, ff_group_list):
+      # unpack the coefficients
+      form_fact_coeff_group = FormFactCoeff()
+      form_fact_coeff_group.a = [coeff_list[0], coeff_list[2], coeff_list[4], coeff_list[6]]
+      form_fact_coeff_group.b = [coeff_list[1], coeff_list[3], coeff_list[5], coeff_list[7]]
+      form_fact_coeff_group.c = coeff_list[8]
+
+      merit = 0.0
+      n_eval = len(qq_list)
+      for ii in range(n_eval):
+         qq = qq_list[ii]
+         ff_model = FormFact(form_fact_coeff_group, qq)
+         merit += pow(ff_model - ff_group_list[ii], 2)
+      merit /= n_eval
+      print(merit)
+      return merit
+
+   res = minimize(ObjFunc, init_guess, args=(qq_list, ff_group_list),  method='nelder-mead',options={'xtol': 1e-9, 'disp': True})
+   coeff_opt = res.x
+   res = minimize(ObjFunc, coeff_opt, args=(qq_list, ff_group_list),  method='BFGS',options={'xtol': 1e-15, 'disp': True})
+   coeff_opt = res.x
+
+   print("Fit success = ", res.success)
+   print("coeffs      = ", res.x)
