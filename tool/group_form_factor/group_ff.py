@@ -186,16 +186,16 @@ if __name__ == "__main__":
    # export the group form factor
    if not file_ff_group == "":
       foo = open(file_ff_group, "w")
-      foo.write("%-10s %-10s %-10s " % ("q", "ff_group_dir", "ff_group_fit"))
+      foo.write("%-12s %-12s %-12s " % ("q", "ff_group_dir", "ff_group_fit"))
       for el in element_list:
-         foo.write("%-10s " % (el))
+         foo.write("%-12s " % (el))
       foo.write("\n")
       for ii in range(nbin):
          qq = qq_list[ii]
          ff_group_dir = ff_group_list[ii]
          ff_group_fit = FormFact(ff_g, qq)
-         foo.write("%-10.4f %-10.4f %-10.4f " % (qq, ff_group_dir, ff_group_fit))
+         foo.write("%-12.4f %-12.4f %-12.4f " % (qq, ff_group_dir, ff_group_fit))
          for el in element_list:
-            foo.write("%-10.4f " % (FormFact(form_fact_coeff_el[el], qq_list[ii])))
+            foo.write("%-12.4f " % (FormFact(form_fact_coeff_el[el], qq_list[ii])))
          foo.write("\n")
       foo.close()
