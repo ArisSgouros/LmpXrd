@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
    # parse group
    with open(file_group) as foo:
-      line_split = foo.readline()
+      line_split = foo.readline().split()
       natom = int(line_split[0])
       foo.readline()
       for iatom in range(natom):
