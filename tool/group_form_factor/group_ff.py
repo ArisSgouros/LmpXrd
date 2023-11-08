@@ -10,6 +10,8 @@ parser.add_argument('qmax', type=float, help='qmax')
 parser.add_argument('dq', type=float, help='dq')
 parser.add_argument('-orig', '--orig', type=str, default="0,0,0", help='Origin coordinates.')
 parser.add_argument('-scheme', '--scheme', type=str, default="sum", help='Select the weighting scheme (sum/narten).')
+parser.add_argument('-weights', '--weights', type=int, default=0, help='Specify whether atoms contribute with different weights. \
+                     the .xyz file requires an additional column')
 parser.add_argument('-ff_group_file', '--ff_group_file', type=str, default="", help='Path of the group form factor as a function of q.')
 parser.add_argument('-init_guess', '--init_guess', type=str, default="1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0", help='Initial guess of group coeffs.')
 
@@ -42,15 +44,17 @@ if __name__ == "__main__":
    qmax = args.qmax
    dq = args.dq
    scheme = args.scheme
+   is_weight = bool(args.weights)
    r_orig = np.array([float(item) for item in args.orig.split(',')])
    file_ff_group = args.ff_group_file
 
    print("group file : ", file_group)
    print("ff file    : ", file_ff_atom)
    if scheme not in ["narten", "sum"]:
-      print("Unknown weighting scheme " + str(scheme))
+      print("Unknown scheme " + str(scheme))
       sys.exit()
    print("scheme     : ", scheme)
+   print("weights    : ", is_weight)
    print("origin     : ", r_orig)
    print("qmax       : ", qmax)
    print("dq         : ", dq)
@@ -63,6 +67,7 @@ if __name__ == "__main__":
 
    natom = 0
    rcart_list = []
+   weight_list = []
    element_list = []
    element_types = set()
 
@@ -73,10 +78,14 @@ if __name__ == "__main__":
       foo.readline()
       for iatom in range(natom):
          line_split = foo.readline().split()
-         el, x, y, z = line_split
+         el, x, y, z = line_split[0:4]
          element_list.append(el)
          element_types.add(el)
          rcart_list.append(np.array([float(x), float(y), float(z)]))
+         weight = 1.0
+         if is_weight:
+            weight = float(line_split[4])
+         weight_list.append(weight)
 
    #
    # This section deals with the atomic form factors
@@ -132,7 +141,7 @@ if __name__ == "__main__":
             [rr, th, phi] = rsph_list[ii]
             ff = FormFact(form_fact_coeff_el[el], qq)
             jn = spherical_jn(mm, qq*rr)
-            a00 += ff*spherical_jn(mm, qq*rr)
+            a00 += ff*spherical_jn(mm, qq*rr)*weight_list[ii]
             #print("   el: ", el, ", ff: ", ff, ", jn: ", jn, ", rr: ", rr)
          ff_group_list.append(a00)
    elif scheme == "sum":
@@ -141,7 +150,7 @@ if __name__ == "__main__":
          for ii in range(natom):
             el = element_list[ii]
             ff_atom = FormFact(form_fact_coeff_el[el], qq)
-            ff_group += ff_atom
+            ff_group += ff_atom * weight_list[ii]
          ff_group_list.append(ff_group)
 
    #
