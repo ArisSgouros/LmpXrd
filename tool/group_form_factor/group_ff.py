@@ -187,7 +187,7 @@ if __name__ == "__main__":
    if not file_ff_group == "":
       foo = open(file_ff_group, "w")
       foo.write("%-12s %-12s %-12s " % ("q", "ff_group_dir", "ff_group_fit"))
-      for el in element_list:
+      for el in element_types:
          foo.write("%-12s " % (el))
       foo.write("\n")
       for ii in range(nbin):
@@ -195,7 +195,7 @@ if __name__ == "__main__":
          ff_group_dir = ff_group_list[ii]
          ff_group_fit = FormFact(ff_g, qq)
          foo.write("%-12.4f %-12.4f %-12.4f " % (qq, ff_group_dir, ff_group_fit))
-         for el in element_list:
+         for el in element_types:
             foo.write("%-12.4f " % (FormFact(form_fact_coeff_el[el], qq_list[ii])))
          foo.write("\n")
       foo.close()
