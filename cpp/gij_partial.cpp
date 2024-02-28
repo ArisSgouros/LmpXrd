@@ -73,6 +73,8 @@ int main(int argc, char** argv){
    std::string pairfile   = argv[7];
    std::string atom_style    = argv[8];
    std::string rdffile    = argv[9];
+   bool export_indiv      = true;
+   if (argc > 10) export_indiv = (bool)atoi(argv[10]);
 
    // Deal with file formatting
    int data_col_id   = -1;
@@ -442,11 +444,6 @@ int main(int argc, char** argv){
         it_pair != pairs.end(); it_pair++){
       int species_A = it_pair->first;
       int species_B = it_pair->second;
-      string gij_file_name;
-      gij_file_name = rdffile + "."+species_of_num[species_A]+"-"+species_of_num[species_B]+".dat";
-      FILE * pFile;
-      pFile = fopen (gij_file_name.c_str(),"w");
-      cout<<"writting gij of pair "<<species_A<<" "<<species_B<<" ( "<<species_of_num[species_A]<<" "<<species_of_num[species_B]<<" )"<<endl;
       for (int ibin = 0; ibin < n_bin; ibin++){
          float shell_vol = 4.0 / 3.0 * M_PI * (pow(ibin+1, 3) - pow(ibin, 3)) * pow(r_bin, 3);
          float nid = shell_vol * rho;
@@ -456,9 +453,24 @@ int main(int argc, char** argv){
          partial_gij[species_A][species_B][ibin] = (float)partial_hist_ij[species_A][species_B][ibin] / ((float)n_samples) * (float)n_atoms / (NA * NB * nid);
          // fixit: since there are no selfinteractions in bulk, shouldn't we scale as follows?
          //if (species_A == species_B) partial_gij[species_A][species_B][ibin] *= (float)NB / ((float)NB - 1.0);
-         fprintf (pFile, "%10d %10.6f %10.6f\n",ibin, r_bin*((float)ibin+0.5), partial_gij[species_A][species_B][ibin]);
       }
-      fclose(pFile);
+   }
+
+   if (export_indiv) {
+      for (std::vector< std::pair <int, int> >::iterator it_pair = pairs.begin();
+           it_pair != pairs.end(); it_pair++){
+         int species_A = it_pair->first;
+         int species_B = it_pair->second;
+         string gij_file_name;
+         gij_file_name = rdffile + "."+species_of_num[species_A]+"-"+species_of_num[species_B]+".dat";
+         FILE * pFile;
+         pFile = fopen (gij_file_name.c_str(),"w");
+         cout<<"writting gij of pair "<<species_A<<" "<<species_B<<" ( "<<species_of_num[species_A]<<" "<<species_of_num[species_B]<<" )"<<endl;
+         for (int ibin = 0; ibin < n_bin; ibin++){
+            fprintf (pFile, "%10d %10.6f %10.6f\n",ibin, r_bin*((float)ibin+0.5), partial_gij[species_A][species_B][ibin]);
+         }
+         fclose(pFile);
+      }
    }
 
    // Output the gij's of the species in a single file
