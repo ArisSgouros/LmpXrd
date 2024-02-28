@@ -73,8 +73,8 @@ int main(int argc, char** argv){
    std::string pairfile   = argv[7];
    std::string atom_style    = argv[8];
    std::string rdffile    = argv[9];
-   bool export_indiv      = true;
-   if (argc > 10) export_indiv = (bool)atoi(argv[10]);
+   bool export_verbose      = true;
+   if (argc > 10) export_verbose = (bool)atoi(argv[10]);
 
    // Deal with file formatting
    int data_col_id   = -1;
@@ -240,15 +240,17 @@ int main(int argc, char** argv){
    }
 
    // Write the Ids of each species to files
-   for (int ii=0; ii < n_species; ii++){
-      string id_file_name;
-      id_file_name += "o.IDS."+species_of_num[ii]+".dat";
-      ofstream idfile;
-      idfile.open (id_file_name.c_str());
-      cout<<"..writting IDs of species "<<species_of_num[ii]<<" to file " <<id_file_name<<endl;
-      for (std::vector<int>::iterator id = ids_of_species[ii].begin(); id != ids_of_species[ii].end(); id++)
-         idfile<<(*id)<<" ";
-      idfile.close();
+   if (export_verbose) {
+      for (int ii=0; ii < n_species; ii++){
+         string id_file_name;
+         id_file_name += "o.IDS."+species_of_num[ii]+".dat";
+         ofstream idfile;
+         idfile.open (id_file_name.c_str());
+         cout<<"..writting IDs of species "<<species_of_num[ii]<<" to file " <<id_file_name<<endl;
+         for (std::vector<int>::iterator id = ids_of_species[ii].begin(); id != ids_of_species[ii].end(); id++)
+            idfile<<(*id)<<" ";
+         idfile.close();
+      }
    }
 
    // Read the pairs file
@@ -456,7 +458,7 @@ int main(int argc, char** argv){
       }
    }
 
-   if (export_indiv) {
+   if (export_verbose) {
       for (std::vector< std::pair <int, int> >::iterator it_pair = pairs.begin();
            it_pair != pairs.end(); it_pair++){
          int species_A = it_pair->first;
