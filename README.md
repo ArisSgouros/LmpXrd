@@ -1,4 +1,4 @@
-# XrdDev
+# LmpXrd
 Codes for partial distribution function and XRD 
 
 # Author
