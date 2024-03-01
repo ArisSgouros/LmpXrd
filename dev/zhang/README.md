@@ -2,7 +2,7 @@
 Codes for evaluating the Radial Distribution Function
 
 # Author
-- Dr. Kai Zhang
+ - Dr. Kai Zhang
 
 # Notes
  - The code was employed for extra validation purposes.
