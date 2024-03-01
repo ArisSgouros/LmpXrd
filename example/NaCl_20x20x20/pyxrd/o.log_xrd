@@ -15,7 +15,7 @@ There are 8000 atoms in total..
 Printing the atom IDs for each species..
 Reading the partial gr from file o.rdf.dat ..
 0.04459
-Reading the atomic form factors from form_factors.dat ..
+Reading the atomic form factors from ../form_factors.dat ..
 
 Atomic Form Factors
 species : Na

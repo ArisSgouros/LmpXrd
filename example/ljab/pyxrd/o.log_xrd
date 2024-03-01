@@ -13,7 +13,7 @@ There are 2000 atoms in total..
 Printing the atom IDs for each species..
 Reading the partial gr from file o.rdf.dat ..
 0.91033
-Reading the atomic form factors from form_factors.dat ..
+Reading the atomic form factors from ../form_factors.dat ..
 
 Atomic Form Factors
 species : C
