@@ -117,6 +117,10 @@ int main(int argc, char** argv){
    } else if (atom_style == "atomic") {
       data_col_id = 0;
       data_col_type = 1;
+   } else if (atom_style == "angle") {
+      data_col_id = 0;
+      data_col_mol = 1;
+      data_col_type = 2;
    } else {
       std::cout<<"Error: unsupported atom format "<<atom_style<<std::endl;
       return 1;
