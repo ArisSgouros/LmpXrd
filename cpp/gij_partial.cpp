@@ -248,6 +248,7 @@ int main(int argc, char** argv){
 
    // A vector array that contains all atom classes
    std::vector<Atom> atoms;
+   atoms.resize(n_atoms);
 
    // Read the atom section
    //std::vector <std::string> lines_of_file;
@@ -262,7 +263,7 @@ int main(int argc, char** argv){
          atom.mol = -1;
       }
       atom.type = stoi(tokens[data_col_type])-1;
-      atoms.push_back(atom);
+      atoms[atom.id] = atom;
       int snum = num_of_species[species_of_type[atom.type]];
       ids_of_species[snum].push_back(atom.id);
    }
