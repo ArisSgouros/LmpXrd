@@ -1,0 +1,37 @@
+*Parameters of the calculation*
+
+file_data   : o.nacl_10.dat
+file_rdf    : o.nacl_10_25.0_0.01.dat
+rmax           : 25.0
+dr             : 0.01
+qmax           : 6.0
+dq             : 0.01
+Parsing the atom types from the Lammps datafile: o.nacl_10.dat ..
+Na [1]
+Cl [2]
+There are 4000   Na atoms ( 0.5 %)
+There are 4000   Cl atoms ( 0.5 %)
+There are 8000 atoms in total..
+Printing the atom IDs for each species..
+Reading the partial gr from file o.nacl_10_25.0_0.01.dat ..
+0.04459
+Reading the atomic form factors from form_factors.dat ..
+
+Atomic Form Factors
+species : Na
+a [4.7626, 3.1736, 1.2674, 1.1128]
+b [3.285, 8.8422, 0.3136, 129.424]
+c 0.676
+species : Cl
+a [11.4604, 7.1964, 6.2556, 1.6455]
+b [0.0104, 1.1662, 18.5194, 47.7784]
+c -9.5574
+
+Computation of the Faber-Ziman structure factor..
+
+Computation of the X-ray weighted structure factor..
+
+Computation of the coherent scattering intensity..
+
+Done!
+Done!

@@ -1,0 +1,70 @@
+path        :  in.basis_nacl.dat
+cells       :  [20, 20, 20]
+periodicity :  [1, 1, 1]
+calc_bond   :  0
+rc(s)       :  [0.0]
+drc         :  0.1
+Reading the datafile: in.basis_nacl.dat
+
+basis origin:
+    [0. 0. 0.]
+basis vectors:
+    [5.6402 0.     0.    ]
+    [0.     5.6402 0.    ]
+    [0.     0.     5.6402]
+basis volume:
+    179.42523043680802
+basis density:
+    0.04458681747558089
+atom types:
+    1 22.989769 Na
+    2 35.453 Cl
+basis atoms:
+   id       type     charge           x                y                z               
+   1        1        1.000000000      0.000000000      0.000000000      0.000000000     
+   2        1        1.000000000      2.820100000      2.820100000      0.000000000     
+   3        1        1.000000000      0.000000000      2.820100000      2.820100000     
+   4        1        1.000000000      2.820100000      0.000000000      2.820100000     
+   5        2        -1.000000000     2.820100000      0.000000000      0.000000000     
+   6        2        -1.000000000     0.000000000      2.820100000      0.000000000     
+   7        2        -1.000000000     0.000000000      0.000000000      2.820100000     
+   8        2        -1.000000000     2.820100000      2.820100000      2.820100000     
+box vectors:
+    [112.804   0.      0.   ]
+    [  0.    112.804   0.   ]
+    [  0.      0.    112.804]
+box vectors (lammps constraints):
+   xlo : 0.000000000     
+   xhi : 112.804000000   
+   ylo : 0.000000000     
+   yhi : 112.804000000   
+   zlo : 0.000000000     
+   zhi : 112.804000000   
+   xy  : 0.000000000     
+   xz  : 0.000000000     
+   yz  : 0.000000000     
+
+Generating the atomic coordinates..
+
+Generating a lammps datafile with name o.nacl_20.dat ..
+
+Generating a lammps dump file with name o.nacl_20.lammpstrj ..
+
+Generating a XYZ dump file with name o.nacl_20.xyz ..
+
+real	0m0.719s
+user	0m4.157s
+sys	0m0.042s
+
+real	0m44.135s
+user	0m44.111s
+sys	0m0.024s
+Traceback (most recent call last):
+  File "/home/asgouros/Programs/LmpXrd/example/NaCl_bench/../../pyxrd//pyxrd.py", line 184, in <module>
+    current_line.pop(0)
+    ~~~~~~~~~~~~~~~~^^^
+IndexError: pop from empty list
+
+real	0m0.339s
+user	0m3.789s
+sys	0m0.030s

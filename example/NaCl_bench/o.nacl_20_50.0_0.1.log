@@ -1,0 +1,49 @@
+
+Parameters of the computation:
+*r_max: 50
+*r_bin: 0.1
+*the lammps dump file is processed every 1 frames
+*gij based in ALL interactions
+
+Reading the lammps datafile with name o.nacl_20.dat..
+
+number of atoms: 64000
+number of types: 2
+
+Species assigned to each lammps atom type:
+0 Na
+1 Cl
+
+..assigning num 0 to species Na
+..assigning num 1 to species Cl
+
+..writting IDs of species Na to file o.IDS.Na.dat
+..writting IDs of species Cl to file o.IDS.Cl.dat
+
+Reading the pairs of species from file: gij_pairs.dat
+number of pairs: 4
+
+list of pairs to be examined
+0 0 ( Na Na )
+0 1 ( Na Cl )
+1 0 ( Cl Na )
+1 1 ( Cl Cl )
+
+find the number of interactions..
+0 0 = 0
+0 1 = 0
+1 0 = 0
+1 1 = 0
+
+Computation of gij from lammps dumpfile: o.nacl_20.lammpstrj
+
+Number of samples examined: 1
+Ensemble averaged System volume: 1.4354e+06
+
+writting gij of pair 0 0 ( Na Na )
+writting gij of pair 0 1 ( Na Cl )
+writting gij of pair 1 0 ( Cl Na )
+writting gij of pair 1 1 ( Cl Cl )
+
+Writting all gij's in file: o.nacl_20_50.0_0.1.dat
+Done!
