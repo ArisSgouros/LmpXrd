@@ -30,6 +30,7 @@ import math as math
 import argparse
 
 kTol = 1e-6
+kRadToDegree = 180.0/np.pi
 
 parser = argparse.ArgumentParser(description='Decimate lammps dump files')
 parser.add_argument('datafile', type=str, help='Path of the lammps data file')
@@ -40,6 +41,7 @@ parser.add_argument('dr', type=float, help='Step interval')
 parser.add_argument('qmax', type=float, help='Max wavevector')
 parser.add_argument('dq', type=float, help='wavevector interval')
 parser.add_argument('-atomtype', type=str, default='full', help='Set the atomtype in the Lammps data file (e.g., full, atomic, etc.)')
+parser.add_argument('-lambda_inc', type=float, default=1.5406, help='wavelength of incident beam [default: 1.5406 AA, Cu Ka ]')
 
 def FormFact(p, qq):
    fa = p["c"]
@@ -57,6 +59,7 @@ if __name__ == "__main__":
    qmax         = args.qmax
    dq           = args.dq
    atomtype     = args.atomtype
+   lambda_inc   = args.lambda_inc
 
    print( "*Parameters of the calculation*")
    print()
@@ -81,6 +84,15 @@ if __name__ == "__main__":
    r_range = [(ii+0.5)*dr for ii in range(rbins)]
    qbins = int(qmax / dq)
    q_range = [(ii+0.5)*dq for ii in range(qbins)]
+
+   # Convert qq to 2*theta
+   two_theta_range = []
+   for qq in q_range:
+      two_theta = -1.0
+      sintheta = lambda_inc*qq/4.0/np.pi
+      if abs(sintheta) < 1.0:
+         two_theta = 2.0*np.arcsin(sintheta)*kRadToDegree
+      two_theta_range.append(two_theta)
 
    print( "Parsing the atom types from the Lammps datafile:",file_data,"..")
 
@@ -301,7 +313,7 @@ if __name__ == "__main__":
    g = open('o.Fx_Icoh.dat', 'w')
    g.write("%-19s %-19s %-19s %-19s\n" % ("bin", "q", "Fx", "Icoh"))
    for iq in range(qbins):
-      g.write( "%-19d %-19.6f %-19.6f %-19.6f\n"  %(iq, q_range[iq], Fx[iq], Icoh[iq]))
+      g.write( "%-19d %-19.6f %-19.6f %-19.6f %-19.6f\n"  %(iq, q_range[iq], two_theta_range[iq], Fx[iq], Icoh[iq]))
    g.close()
    print( "Done!")
 
