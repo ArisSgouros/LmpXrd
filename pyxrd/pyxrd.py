@@ -311,7 +311,7 @@ if __name__ == "__main__":
       Icoh[iq] = Fx[iq] * denominator + sum_c_fsq
 
    g = open('o.Fx_Icoh.dat', 'w')
-   g.write("%-19s %-19s %-19s %-19s\n" % ("bin", "q", "Fx", "Icoh"))
+   g.write("%-19s %-19s %-19s %-19s %-19s\n" % ("bin", "q", "two_theta", "Fx", "Icoh"))
    for iq in range(qbins):
       g.write( "%-19d %-19.6f %-19.6f %-19.6f %-19.6f\n"  %(iq, q_range[iq], two_theta_range[iq], Fx[iq], Icoh[iq]))
    g.close()
