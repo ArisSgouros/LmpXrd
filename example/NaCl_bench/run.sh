@@ -3,9 +3,9 @@
 path_python="../../"
 path_crystal_builder="/home/asgouros/Programs/CrystalBuilder/crystal_builder.py"
 
-nn=25
+nn=30
 r_max=70.0
-dr=0.005
+dr=0.01
 q_max=6.0
 dq=0.01
 path_gij="../../cpp/gij_partial"
