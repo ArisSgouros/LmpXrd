@@ -1,0 +1,21 @@
+# setup the system
+dimension 3
+units metal
+boundary p p p
+neighbor 2.0 bin
+atom_style full
+read_data ../gen/o.ni.dat
+
+# setup the force field
+pair_style zero 5.0
+pair_coeff * *
+
+thermo 1
+thermo_style custom step etotal ebond eangle edihed pxx pyy pzz pxy pxz pyz lx ly lz xy
+
+#compute cxrd all xrd 1.5406 Na Cl 2Theta 10 100 c 1 1 1 LP 1 echo
+compute cxrd all xrd 1.5406 Ni 2Theta 10 100
+
+fix fave all ave/histo/weight 1 1 1 10 100 250 c_cxrd[1] c_cxrd[2] mode vector file o.xrd.dat
+
+run 0
