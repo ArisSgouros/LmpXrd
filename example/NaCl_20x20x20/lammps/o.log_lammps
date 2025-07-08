@@ -1,0 +1,76 @@
+LAMMPS (29 Aug 2024 - Update 1)
+Reading data file ...
+  orthogonal box = (0 0 0) to (56.402 56.402 56.402)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  8000 atoms
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     0 = max # of 1-2 neighbors
+     0 = max # of 1-3 neighbors
+     0 = max # of 1-4 neighbors
+     1 = max # of special neighbors
+  special bonds CPU = 0.001 seconds
+  read_data CPU = 0.020 seconds
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+- Type Label Framework: https://doi.org/10.1021/acs.jpcb.3c08419
+- compute xrd command: doi:10.1088/0965-0393/21/5/055020
+The log file lists these citations in BibTeX format.
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+WARNING: No fixes with time integration, atoms won't move (../verlet.cpp:60)
+Generated 0 of 1 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 7
+  ghost atom cutoff = 7
+  binsize = 3.5, bins = 17 17 17
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair zero, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Setting up Verlet run ...
+  Unit style    : metal
+  Current step  : 0
+  Time step     : 0.001
+Per MPI rank memory allocation (min/avg/max) = 50.19 | 50.19 | 50.19 Mbytes
+   Step         TotEng         E_bond        E_angle        E_dihed          Pxx            Pyy            Pzz            Pxy            Pxz            Pyz             Lx             Ly             Lz             Xy      
+         0   0              0              0              0              0              0              0              0              0              0              56.402         56.402         56.402         0            
+         1   0              0              0              0              0              0              0              0              0              0              56.402         56.402         56.402         0            
+Loop time of 116.064 on 1 procs for 1 steps with 8000 atoms
+
+Performance: 0.001 ns/day, 32240.032 hours/ns, 0.009 timesteps/s, 68.927 atom-step/s
+100.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 4.6737e-05 | 4.6737e-05 | 4.6737e-05 |   0.0 |  0.00
+Bond    | 1.1e-07    | 1.1e-07    | 1.1e-07    |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 3.6565e-05 | 3.6565e-05 | 3.6565e-05 |   0.0 |  0.00
+Output  | 7.6917e-05 | 7.6917e-05 | 7.6917e-05 |   0.0 |  0.00
+Modify  | 116.06     | 116.06     | 116.06     |   0.0 |100.00
+Other   |            | 6.353e-05  |            |       |  0.00
+
+Nlocal:           8000 ave        8000 max        8000 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:           7625 ave        7625 max        7625 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:         320000 ave      320000 max      320000 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 320000
+Ave neighs/atom = 40
+Ave special neighs/atom = 0
+Neighbor list builds = 0
+Dangerous builds = 0
+Total wall time: 0:03:51
